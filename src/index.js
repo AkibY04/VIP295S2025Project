@@ -7,14 +7,15 @@ window.onload = async function() {
     console.log(resp);
 
     console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
-    await aggregateData(20240101, 20241231, 'desc', 1000, 2);
+    await aggregateData("20240101", "20241231", 'desc', 1000, 2);
     console.log(map);
 
 };
 
 async function aggregateData(dateStart, dateEnd, order, limit, batches){
-    let searchRange = `search=receivedate:[${dateStart}+TO+${dateEnd}]`;
+
     for(let i = 0; i < batches; i++){
+        let searchRange = `search=receivedate:[${dateStart}+TO+${dateEnd}]`;
 
         let response = await fetch(`https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`);
 
@@ -37,9 +38,28 @@ async function aggregateData(dateStart, dateEnd, order, limit, batches){
             });
         }
         // update search query
-        let dateStart   = "20230101";
-        let dateEnd     = "20231231";
+        dateStart   = getDateAndWeekBefore(dateStart);
+        dateEnd     = getDateAndWeekBefore(dateEnd);
     }
+}
+
+function getDateAndWeekBefore(dateInput) {
+    const year = parseInt(dateInput.substring(0, 4), 10);
+    const month = parseInt(dateInput.substring(4, 6), 10) - 1;
+    const day = parseInt(dateInput.substring(6, 8), 10);
+    
+    const givenDate = new Date(year, month, day);
+    const weekBefore = new Date(givenDate);
+    
+    weekBefore.setDate(givenDate.getDate() - 7);
+
+    const formatDate = (date) => 
+        date.getFullYear().toString() +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        String(date.getDate()).padStart(2, '0');
+
+    return formatDate(weekBefore);
+    
 }
 
 async function searchQuery(limit, order, dateStart, dateEnd){
