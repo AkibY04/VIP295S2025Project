@@ -1,0 +1,46 @@
+body {
+    display: flex;
+    align-items: center;
+    overflow-x: hidden;
+    word-wrap: break-word; 
+}
+
+#banner {
+    display: flex;
+    align-items: center; /* vertically center children */
+    height: 6vh;
+    width: 100%;
+    padding-top: 1vh;
+    z-index: 100;
+    text-align: left;
+    border-bottom: 0.07em solid black;
+    background-color: white;
+    position: fixed; 
+    top: 0;
+    left: 0; 
+}
+
+#home-button {
+    margin-left: 1vh; /* adjust left spacing as needed */
+}
+
+#home-button img {
+    height: 4vh;  /* adjust image height to fit within the banner */
+    width: auto;  /* maintain aspect ratio */
+}
+
+#searchbar {
+    flex-grow: 1; 
+    display: flex; 
+    justify-content: center;
+    margin-bottom: 0.4em;
+}
+
+#searchbar input {
+    padding: 1em;
+    border-radius: 12em; 
+    width: 65vh;
+    border: 0.1em solid #000000;
+    outline: none; 
+    box-shadow: none;
+}
