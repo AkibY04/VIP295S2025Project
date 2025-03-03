@@ -7,7 +7,9 @@ window.onload = async function() {
     console.log(resp);
 
     console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
-    await aggregateData("20240101", "20241231", 'desc', 1000, 2);
+    // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
+    await saerchy("albuterol", "20240101", "20241231", 'desc', 1000, 2);
+
     console.log(map);
 
 };
@@ -16,8 +18,8 @@ async function aggregateData(dateStart, dateEnd, order, limit, batches){
 
     for(let i = 0; i < batches; i++){
         let searchRange = `search=receivedate:[${dateStart}+TO+${dateEnd}]`;
-
-        let response = await fetch(`https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`);
+        let searchStr = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
+        let response = await fetch(searchStr);
 
         const json = await response.json();
         for(let i = 0; i < json.results.length; i++){
@@ -62,6 +64,39 @@ function getDateAndWeekBefore(dateInput) {
     
 }
 
+async function saerchy(searchTerm, dateStart, dateEnd, order, limit, batches){
+
+    for(let i = 0; i < batches; i++){
+        let searchRange = `search=patient.drug.openfda.brand_name:"albuterol"+AND+receivedate:[${dateStart}+TO+${dateEnd}]`;
+        let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
+        let response    = await fetch(searchStr);
+
+        const json = await response.json();
+        for(let i = 0; i < json.results.length; i++){
+            //Access patient information
+            console.log("==========");
+            const patient = json.results[i].patient;
+    
+            //Access drug information
+            patient.drug.forEach((drug, index) => {
+                //console.log(`Drug ${index + 1} - Medicinal Product:`, drug.medicinalproduct);
+                //console.log(`Drug Indication:`, drug.drugindication);
+                if (drug.medicinalproduct in map){
+                    map[drug.medicinalproduct] = map[drug.medicinalproduct]+1;
+                }
+                else {
+                    map[drug.medicinalproduct] = 1
+                }
+            });
+        }
+        // update search query
+        dateStart   = getDateAndWeekBefore(dateStart);
+        dateEnd     = getDateAndWeekBefore(dateEnd);
+    }
+}
+
+
+
 async function searchQuery(limit, order, dateStart, dateEnd){
     
     let searchRange = "";
@@ -82,3 +117,4 @@ async function searchQuery(limit, order, dateStart, dateEnd){
     let response = await fetch(`https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`);
     return response;
 }
+
