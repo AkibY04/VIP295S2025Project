@@ -8,7 +8,7 @@ window.onload = async function() {
 
     console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
     // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
-    await saerchy("albuterol", "20240101", "20241231", 'desc', 1000, 2);
+    await saerchy("albuterol", "20240101", "20141215", 'desc', 1000, 30);
 
     console.log(map);
 
@@ -56,10 +56,9 @@ function getDateBefore(dateInput, mode) {
     if(mode === "week") weekBefore.setDate(givenDate.getDate() - 7);
     else if(mode === "month") weekBefore.setMonth(givenDate.getMonth() - 1);
     else if(mode === "year") weekBefore.setFullYear(givenDate.getFullYear() - 1);
+    else if(mode === "day") weekBefore.setDate(givenDate.getDate() - 1);
     else return null;
     
-    weekBefore.setDate(givenDate.getDate() - 7);
-
     const formatDate = (date) => 
         date.getFullYear().toString() +
         String(date.getMonth() + 1).padStart(2, '0') +
@@ -71,32 +70,51 @@ function getDateBefore(dateInput, mode) {
 
 async function saerchy(searchTerm, dateStart, dateEnd, order, limit, batches){
 
+
+
     for(let i = 0; i < batches; i++){
-        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+receivedate:[${dateStart}+TO+${dateEnd}]`;
+        let x = 0;
+
+        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:US+AND+receivedate:[${dateStart}+TO+${dateStart}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
         let response    = await fetch(searchStr);
+        // console.log("Start: ", dateStart);
+        
+        let skipIter = 0;
+        let json = await response.json();
+        while( json.results.length > 0 ){
+            // map[dateStart] = map[dateStart]+json.results.length;
+            searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}&skip=${limit*skipIter}`;
+            response    = await fetch(searchStr); 
+            json        = await response.json();
+            console.log(json);
+            console.log("LENGTH: ", json.results.length);
+            skipIter++;
 
-        const json = await response.json();
-        for(let i = 0; i < json.results.length; i++){
-            //Access patient information
-            console.log("==========");
-            const patient = json.results[i].patient;
-    
-            //Access drug information
-            patient.drug.forEach((drug, index) => {
-                //console.log(`Drug ${index + 1} - Medicinal Product:`, drug.medicinalproduct);
-                //console.log(`Drug Indication:`, drug.drugindication);
-                if (drug.medicinalproduct in map){
-                    map[drug.medicinalproduct] = map[drug.medicinalproduct]+1;
-                }
-                else {
-                    map[drug.medicinalproduct] = 1
-                }
-            });
         }
+
+        console.log(" :D ")
+
+        // for(let i = 0; i < json.results.length; i++){
+        //     //Access patient information
+        //     x++;
+        //     const patient = json.results[i].patient;
+            
+        //     //Access drug information
+        //     patient.drug.forEach((drug, index) => {
+        //         if (drug.medicinalproduct in map){
+        //             map[drug.medicinalproduct] = map[drug.medicinalproduct]+1;
+        //         }
+        //         else {
+        //             map[drug.medicinalproduct] = 1
+        //         }
+        //     });
+        // }
+
         // update search query
-        dateStart   = getDateAndWeekBefore(dateStart);
-        dateEnd     = getDateAndWeekBefore(dateEnd);
+        dateStart   = getDateBefore(dateStart, "day");
+        dateEnd     = getDateBefore(dateEnd, "day");
+        // console.log("x: ", x);
     }
 }
 
@@ -122,4 +140,3 @@ async function searchQuery(limit, order, dateStart, dateEnd){
     let response = await fetch(`https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`);
     return response;
 }
-
