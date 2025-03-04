@@ -8,10 +8,24 @@ window.onload = async function() {
 
     console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
     // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
-    await searchDrug("albuterol", "20040101", "20240101", 'desc', 1, 20, "year");
+    await searchDrug("albuterol", "20100101", "20240101", 'desc', 1, 14, "year");
 
     console.log(map);
 
+    const data = [{
+        x: Object.keys(map),
+        y: Object.values(map),
+        type: 'bar',
+        marker: {color: 'green'}
+    }]
+
+    const layout = {
+        title: "Adverse Drug Events For Albuterol",
+        xaxis: {title: "Year"},
+        yaxis: {title: "Count"}
+    }
+
+    Plotly.newPlot('plot', data, layout);
 };
 
 async function aggregateData(dateStart, dateEnd, order, limit, batches){
@@ -89,22 +103,18 @@ async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches,
         let response    = await fetch(searchStr);
         
         let json = await response.json();
-        map[curYear] = json.meta.results.total;
-        curYear=-1; 
+        map[curYear--] = json.meta.results.total;
+
         // update search query
         newStart   = getDateBefore(newStart, dateFrequency);
         dateEnd     = getDateBefore(dateEnd, dateFrequency);
 
-
-
         console.log(searchStr);
         console.log(json.meta.results.total);
         // console.log(newStart , " + ", dateEnd);
-        
-
-
-        map
     }
+    // console.log(Object.keys(map));
+
 }
 
 
