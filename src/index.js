@@ -8,7 +8,7 @@ window.onload = async function() {
 
     console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
     // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
-    await saerchy("albuterol", "20240101", "20141215", 'desc', 1000, 30);
+    await searchDrug("albuterol", "20140101", "20240101", 'desc', 1, 10);
 
     console.log(map);
 
@@ -45,6 +45,8 @@ async function aggregateData(dateStart, dateEnd, order, limit, batches){
     }
 }
 
+// Retrieves the date before the given date in dateInput
+// mode: 1 "week" / "month" / "year" / "day" before the given date
 function getDateBefore(dateInput, mode) {
     const year = parseInt(dateInput.substring(0, 4), 10);
     const month = parseInt(dateInput.substring(4, 6), 10) - 1;
@@ -68,32 +70,15 @@ function getDateBefore(dateInput, mode) {
     
 }
 
-async function saerchy(searchTerm, dateStart, dateEnd, order, limit, batches){
-
-
-
+async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches){
     for(let i = 0; i < batches; i++){
-        let x = 0;
-
         let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:US+AND+receivedate:[${dateStart}+TO+${dateStart}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
         let response    = await fetch(searchStr);
-        // console.log("Start: ", dateStart);
         
-        let skipIter = 0;
         let json = await response.json();
-        while( json.results.length > 0 ){
-            // map[dateStart] = map[dateStart]+json.results.length;
-            searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}&skip=${limit*skipIter}`;
-            response    = await fetch(searchStr); 
-            json        = await response.json();
-            console.log(json);
-            console.log("LENGTH: ", json.results.length);
-            skipIter++;
 
-        }
-
-        console.log(" :D ")
+        console.log(json.meta.results.total);
 
         // for(let i = 0; i < json.results.length; i++){
         //     //Access patient information
@@ -112,9 +97,8 @@ async function saerchy(searchTerm, dateStart, dateEnd, order, limit, batches){
         // }
 
         // update search query
-        dateStart   = getDateBefore(dateStart, "day");
-        dateEnd     = getDateBefore(dateEnd, "day");
-        // console.log("x: ", x);
+        dateStart   = getDateBefore(dateStart, "year");
+        dateEnd     = getDateBefore(dateEnd, "year");
     }
 }
 
