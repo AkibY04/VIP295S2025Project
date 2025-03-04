@@ -70,10 +70,16 @@ function getDateBefore(dateInput, mode) {
     
 }
 
-async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches){
-    let newStart = dateStart = getDateBefore(dateEnd, "year");
-    // let newEnd = dateEnd;
-
+// Reports the # of adverse events of a specific drug between two dates
+// searchTerm: the drug name
+// dateStart: the starting date
+// dateEnd: the ending date
+// order: the order of the search
+// limit: the number of results
+// batches: the number of batches
+// dateFrequency: the date frequency between each batch (week, month, year, or day)
+async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches, dateFrequency){
+    let newStart = dateStart = getDateBefore(dateEnd, dateFrequency);
     
     for(let i = 0; i < batches; i++){
         let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:US+AND+receivedate:[${newStart}+TO+${dateEnd}]`;
@@ -84,9 +90,10 @@ async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches)
         console.log(searchStr);
         console.log(json.meta.results.total);
         console.log(newStart , " + ", dateEnd);
+        
         // update search query
-        newStart   = getDateBefore(newStart, "year");
-        dateEnd     = getDateBefore(dateEnd, "year");
+        newStart   = getDateBefore(newStart, dateFrequency);
+        dateEnd     = getDateBefore(dateEnd, dateFrequency);
     }
 }
 
