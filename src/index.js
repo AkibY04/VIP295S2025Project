@@ -67,7 +67,7 @@ function getDateAndWeekBefore(dateInput) {
 async function saerchy(searchTerm, dateStart, dateEnd, order, limit, batches){
 
     for(let i = 0; i < batches; i++){
-        let searchRange = `search=patient.drug.openfda.brand_name:"albuterol"+AND+receivedate:[${dateStart}+TO+${dateEnd}]`;
+        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+receivedate:[${dateStart}+TO+${dateEnd}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
         let response    = await fetch(searchStr);
 
