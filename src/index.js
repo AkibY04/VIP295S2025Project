@@ -8,7 +8,7 @@ window.onload = async function() {
 
     console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
     // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
-    await searchDrug("albuterol", "20140101", "20240101", 'desc', 1, 10);
+    await searchDrug("albuterol", "20140101", "20240101", 'desc', 1, 10, "year");
 
     console.log(map);
 
