@@ -8,8 +8,8 @@ window.onload = async function() {
 
     console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
     // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
+    // await searchDrug("adderall", "20100101", "20240101", 'desc', 1, 14, "year");
     await searchDrug("albuterol", "20100101", "20240101", 'desc', 1, 14, "year");
-
     console.log(map);
 
     const data = [{
@@ -20,7 +20,7 @@ window.onload = async function() {
     }]
 
     const layout = {
-        title: "Adverse Drug Events For Albuterol",
+        title: "Adverse Drug Events",
         xaxis: {title: "Year"},
         yaxis: {title: "Count"}
     }
