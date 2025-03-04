@@ -45,13 +45,18 @@ async function aggregateData(dateStart, dateEnd, order, limit, batches){
     }
 }
 
-function getDateAndWeekBefore(dateInput) {
+function getDateBefore(dateInput, mode) {
     const year = parseInt(dateInput.substring(0, 4), 10);
     const month = parseInt(dateInput.substring(4, 6), 10) - 1;
     const day = parseInt(dateInput.substring(6, 8), 10);
     
     const givenDate = new Date(year, month, day);
     const weekBefore = new Date(givenDate);
+    
+    if(mode === "week") weekBefore.setDate(givenDate.getDate() - 7);
+    else if(mode === "month") weekBefore.setMonth(givenDate.getMonth() - 1);
+    else if(mode === "year") weekBefore.setFullYear(givenDate.getFullYear() - 1);
+    else return null;
     
     weekBefore.setDate(givenDate.getDate() - 7);
 
