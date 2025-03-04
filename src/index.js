@@ -71,33 +71,21 @@ function getDateBefore(dateInput, mode) {
 }
 
 async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches){
+    let newStart = dateStart = getDateBefore(dateEnd, "year");
+    // let newEnd = dateEnd;
+
+    
     for(let i = 0; i < batches; i++){
-        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:US+AND+receivedate:[${dateStart}+TO+${dateStart}]`;
+        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:US+AND+receivedate:[${newStart}+TO+${dateEnd}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
         let response    = await fetch(searchStr);
         
         let json = await response.json();
-
+        console.log(searchStr);
         console.log(json.meta.results.total);
-
-        // for(let i = 0; i < json.results.length; i++){
-        //     //Access patient information
-        //     x++;
-        //     const patient = json.results[i].patient;
-            
-        //     //Access drug information
-        //     patient.drug.forEach((drug, index) => {
-        //         if (drug.medicinalproduct in map){
-        //             map[drug.medicinalproduct] = map[drug.medicinalproduct]+1;
-        //         }
-        //         else {
-        //             map[drug.medicinalproduct] = 1
-        //         }
-        //     });
-        // }
-
+        console.log(newStart , " + ", dateEnd);
         // update search query
-        dateStart   = getDateBefore(dateStart, "year");
+        newStart   = getDateBefore(newStart, "year");
         dateEnd     = getDateBefore(dateEnd, "year");
     }
 }
