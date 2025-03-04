@@ -8,7 +8,7 @@ window.onload = async function() {
 
     console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
     // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
-    await searchDrug("albuterol", "20140101", "20240101", 'desc', 1, 10);
+    await searchDrug("albuterol", "20040101", "20240101", 'desc', 1, 20, "year");
 
     console.log(map);
 
@@ -79,21 +79,31 @@ function getDateBefore(dateInput, mode) {
 // batches: the number of batches
 // dateFrequency: the date frequency between each batch (week, month, year, or day)
 async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches, dateFrequency){
-    let newStart = dateStart = getDateBefore(dateEnd, dateFrequency);
-    
+    map={}
+    let newStart    = dateStart = getDateBefore(dateEnd, dateFrequency);
+    let curYear     = dateEnd.substring(0,4);
+    curYear = Number(curYear); 
     for(let i = 0; i < batches; i++){
         let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:US+AND+receivedate:[${newStart}+TO+${dateEnd}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
         let response    = await fetch(searchStr);
         
         let json = await response.json();
-        console.log(searchStr);
-        console.log(json.meta.results.total);
-        console.log(newStart , " + ", dateEnd);
-        
+        map[curYear] = json.meta.results.total;
+        curYear=-1; 
         // update search query
         newStart   = getDateBefore(newStart, dateFrequency);
         dateEnd     = getDateBefore(dateEnd, dateFrequency);
+
+
+
+        console.log(searchStr);
+        console.log(json.meta.results.total);
+        // console.log(newStart , " + ", dateEnd);
+        
+
+
+        map
     }
 }
 
