@@ -1,31 +1,55 @@
 var map = {};
 window.onload = async function() {
-    console.log("Script loaded!");
+    document.getElementById("search-input").addEventListener('keydown', async function(event) {
+        if(event.key == 'Enter'){
+          const drugName = event.target.value;
+          if(!(await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year"))){
+                alert("No data found for " + drugName);
+          }
+      
+          const data = [{
+              x: Object.keys(map),
+              y: Object.values(map),
+              type: 'bar',
+              marker: {color: 'green'}
+          }]
+      
+          const layout = {
+              title: "Adverse Drug Events for " + drugName,
+              xaxis: {title: "Year"},
+              yaxis: {title: "Count"}
+          }
+      
+          Plotly.newPlot('plot', data, layout);
+        }
+    });
 
-    let resp = await searchQuery(10, 1, 20240101, 20241231);
-    resp = await resp.json();
-    console.log(resp);
+    // console.log("Script loaded!");
 
-    console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
-    // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
-    // await searchDrug("adderall", "20100101", "20240101", 'desc', 1, 14, "year");
-    await searchDrug("albuterol", "20100101", "20240101", 'desc', 1, 14, "year");
-    console.log(map);
+    // let resp = await searchQuery(10, 1, 20240101, 20241231);
+    // resp = await resp.json();
+    // console.log(resp);
 
-    const data = [{
-        x: Object.keys(map),
-        y: Object.values(map),
-        type: 'bar',
-        marker: {color: 'green'}
-    }]
+    // console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
+    // // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
+    // // await searchDrug("adderall", "20100101", "20240101", 'desc', 1, 14, "year");
+    // await searchDrug("albuterol", "20100101", "20240101", 'desc', 1, 14, "year");
+    // console.log(map);
 
-    const layout = {
-        title: "Adverse Drug Events",
-        xaxis: {title: "Year"},
-        yaxis: {title: "Count"}
-    }
+    // const data = [{
+    //     x: Object.keys(map),
+    //     y: Object.values(map),
+    //     type: 'bar',
+    //     marker: {color: 'green'}
+    // }]
 
-    Plotly.newPlot('plot', data, layout);
+    // const layout = {
+    //     title: "Adverse Drug Events",
+    //     xaxis: {title: "Year"},
+    //     yaxis: {title: "Count"}
+    // }
+
+    // Plotly.newPlot('plot', data, layout);
 };
 
 async function aggregateData(dateStart, dateEnd, order, limit, batches){
@@ -103,6 +127,12 @@ async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches,
         let response    = await fetch(searchStr);
         
         let json = await response.json();
+
+        if(!json.meta.results.total){
+            console.log("No data found");
+            return;
+        }
+
         map[curYear--] = json.meta.results.total;
 
         // update search query
