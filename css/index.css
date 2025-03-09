@@ -48,7 +48,7 @@ body {
 #search-input-0 {
     /* display: none; */
     border-radius: 12em;
-    margin-left: 11vw;
+    margin-left: 10vw;
 }
 
 #search-input-0 input {
@@ -64,6 +64,7 @@ body {
     display: none;
     border-radius: 12em 0 0 12em; 
     border-right: none;
+    margin-left: 10vw
 }
 
 #search-input-1 input {
