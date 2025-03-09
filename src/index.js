@@ -3,8 +3,9 @@ window.onload = async function() {
     document.getElementById("search-input").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
           const drugName = event.target.value;
-          if(!(await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year"))){
+          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year")) == 1){
                 alert("No data found for " + drugName);
+                return;
           }
       
           const data = [{
@@ -128,9 +129,9 @@ async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches,
         
         let json = await response.json();
 
-        if(!json.meta.results.total){
+        if (!json.meta?.results) {
             console.log("No data found");
-            return;
+            return 1;
         }
 
         map[curYear--] = json.meta.results.total;

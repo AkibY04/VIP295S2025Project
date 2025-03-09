@@ -44,3 +44,10 @@ body {
     outline: none; 
     box-shadow: none;
 }
+
+#plot{
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    margin-left: 20%;
+}
