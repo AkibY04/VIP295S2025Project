@@ -7,7 +7,7 @@ body {
 
 #banner {
     display: flex;
-    align-items: center; /* vertically center children */
+    align-items: center; 
     height: 6vh;
     width: 100%;
     padding-top: 1vh;
@@ -21,12 +21,12 @@ body {
 }
 
 #home-button {
-    margin-left: 1vh; /* adjust left spacing as needed */
+    margin-left: 1vh; 
 }
 
 #home-button img {
-    height: 4vh;  /* adjust image height to fit within the banner */
-    width: auto;  /* maintain aspect ratio */
+    height: 4vh;  
+    width: auto;  
 }
 
 #searchbar {
@@ -38,7 +38,7 @@ body {
 
 .search-box {
     padding: 1em;
-    width: 32.5vh; /* Half of 65vh so combined they match */
+    width: 32.5vh; 
     border: 0.1em solid #000000;
     outline: none;
     box-shadow: none;
