@@ -21,7 +21,9 @@ window.onload = async function() {
               yaxis: {title: "Count"}
           }
       
-          Plotly.newPlot('plot', data, layout);
+          Plotly.newPlot('plot', data, layout, 
+            {responsive: true}
+          );
         }
     });
 
