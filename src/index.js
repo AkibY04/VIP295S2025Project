@@ -1,6 +1,6 @@
 var map = {};
 window.onload = async function() {
-    document.getElementById("search-input").addEventListener('keydown', async function(event) {
+    document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
           const drugName = event.target.value;
           if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year")) == 1){
@@ -27,33 +27,26 @@ window.onload = async function() {
         }
     });
 
-    // console.log("Script loaded!");
+    document.getElementById("toggleButton").addEventListener('click', async function(event){
+        console.log("cllicked!");
+        toggleSearchbarVisibility();
+    });
 
-    // let resp = await searchQuery(10, 1, 20240101, 20241231);
-    // resp = await resp.json();
-    // console.log(resp);
-
-    // console.log("=============TESTING=============\n\n\n\n\n\n\n\n\n");
-    // // await aggregateData("20240101", "20241231", 'desc', 1000, 2);
-    // // await searchDrug("adderall", "20100101", "20240101", 'desc', 1, 14, "year");
-    // await searchDrug("albuterol", "20100101", "20240101", 'desc', 1, 14, "year");
-    // console.log(map);
-
-    // const data = [{
-    //     x: Object.keys(map),
-    //     y: Object.values(map),
-    //     type: 'bar',
-    //     marker: {color: 'green'}
-    // }]
-
-    // const layout = {
-    //     title: "Adverse Drug Events",
-    //     xaxis: {title: "Year"},
-    //     yaxis: {title: "Count"}
-    // }
-
-    // Plotly.newPlot('plot', data, layout);
 };
+
+function toggleSearchbarVisibility(){
+    if(document.getElementById("search-input-0").style.display=="none"){
+        document.getElementById("search-input-0").style.display="block";
+        document.getElementById("search-input-1").style.display="none"
+        document.getElementById("search-input-2").style.display="none";
+    }
+    else{
+        document.getElementById("search-input-0").style.display="none";
+        document.getElementById("search-input-1").style.display="block"
+        document.getElementById("search-input-2").style.display="block";
+    }
+
+}
 
 async function aggregateData(dateStart, dateEnd, order, limit, batches){
 
