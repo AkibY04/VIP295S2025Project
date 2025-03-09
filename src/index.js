@@ -4,7 +4,7 @@ window.onload = async function() {
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
           const drugName = event.target.value;
-          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year")) == 1){
+          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year", map)) == 1){
                 alert("No data found for " + drugName);
                 return;
           }
@@ -31,7 +31,7 @@ window.onload = async function() {
     document.getElementById("search-input-1").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
           const drugName = event.target.value;
-          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year")) == 1){
+          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year", map)) == 1){
                 alert("No data found for " + drugName);
                 return;
           }
@@ -62,14 +62,14 @@ window.onload = async function() {
     document.getElementById("search-input-2").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
           const drugName = event.target.value;
-          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year")) == 1){
+          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year", map2)) == 1){
                 alert("No data found for " + drugName);
                 return;
           }
       
           const data = [{
-              x: Object.keys(map),
-              y: Object.values(map),
+              x: Object.keys(map2),
+              y: Object.values(map2),
               type: 'bar',
               marker: {color: 'green'}
           }]
@@ -182,8 +182,8 @@ function getDateBefore(dateInput, mode) {
 // limit: the number of results
 // batches: the number of batches
 // dateFrequency: the date frequency between each batch (week, month, year, or day)
-async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches, dateFrequency){
-    map={}
+async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches, dateFrequency, mapVar){
+    Object.keys(mapVar).forEach(key => delete mapVar[key]);
     let newStart    = dateStart = getDateBefore(dateEnd, dateFrequency);
     let curYear     = dateEnd.substring(0,4);
     curYear = Number(curYear); 
@@ -199,7 +199,7 @@ async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches,
             return 1;
         }
 
-        map[curYear--] = json.meta.results.total;
+        mapVar[curYear--] = json.meta.results.total;
 
         // update search query
         newStart   = getDateBefore(newStart, dateFrequency);
