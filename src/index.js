@@ -1,4 +1,5 @@
 var map = {};
+var map2 = {};
 window.onload = async function() {
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
@@ -21,14 +22,76 @@ window.onload = async function() {
               yaxis: {title: "Count"}
           }
       
-          Plotly.newPlot('plot', data, layout, 
+          Plotly.newPlot('plot1', data, layout, 
             {responsive: true}
           );
         }
     });
 
+    document.getElementById("search-input-1").addEventListener('keydown', async function(event) {
+        if(event.key == 'Enter'){
+          const drugName = event.target.value;
+          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year")) == 1){
+                alert("No data found for " + drugName);
+                return;
+          }
+      
+          const data = [{
+              x: Object.keys(map),
+              y: Object.values(map),
+              type: 'bar',
+              marker: {color: 'green'}
+          }]
+      
+          const layout = {
+              width: 600,
+              title: "Adverse Drug Events for " + drugName,
+              xaxis: {title: "Year"},
+              yaxis: {title: "Count"}
+          }
+      
+          Plotly.newPlot('plot1', data, layout, 
+            {
+                responsive: true,
+                autosize:true
+            }
+          );
+        }
+    });
+
+    document.getElementById("search-input-2").addEventListener('keydown', async function(event) {
+        if(event.key == 'Enter'){
+          const drugName = event.target.value;
+          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year")) == 1){
+                alert("No data found for " + drugName);
+                return;
+          }
+      
+          const data = [{
+              x: Object.keys(map),
+              y: Object.values(map),
+              type: 'bar',
+              marker: {color: 'green'}
+          }]
+      
+          const layout = {
+              width: 600,
+
+              title: "Adverse Drug Events for " + drugName,
+              xaxis: {title: "Year"},
+              yaxis: {title: "Count"}
+          }
+      
+          Plotly.newPlot('plot2', data, layout, 
+            {
+                responsive: true, 
+                autosize:true
+            }
+          );
+        }
+    });
+
     document.getElementById("toggleButton").addEventListener('click', async function(event){
-        console.log("cllicked!");
         toggleSearchbarVisibility();
     });
 
@@ -36,11 +99,18 @@ window.onload = async function() {
 
 function toggleSearchbarVisibility(){
     if(document.getElementById("search-input-0").style.display=="none"){
+        Plotly.purge('plot1');
+        Plotly.purge('plot2'); 
         document.getElementById("search-input-0").style.display="block";
+        document.getElementById("search-input-1").innerHTML="none"
         document.getElementById("search-input-1").style.display="none"
+        document.getElementById("search-input-2").innerHTML="none"
         document.getElementById("search-input-2").style.display="none";
     }
     else{
+        Plotly.purge('plot1');
+        Plotly.purge('plot2'); 
+        document.getElementById("search-input-0").innerHTML="none";
         document.getElementById("search-input-0").style.display="none";
         document.getElementById("search-input-1").style.display="block"
         document.getElementById("search-input-2").style.display="block";
