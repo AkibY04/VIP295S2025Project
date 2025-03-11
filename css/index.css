@@ -104,7 +104,28 @@ body {
     height: 3vh;
     border: 0.1em solid #000000;
     border-radius: 12em; 
-    color:rgb(121, 10, 10);
-    border-color: rgb(129, 89, 14);
+    color:black;
     cursor: pointer;
+    position: relative;
+}
+
+.tooltip {
+    visibility: hidden;
+    background-color: gray;
+    color: white;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#toggleButton:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
 }
