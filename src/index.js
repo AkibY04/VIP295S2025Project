@@ -3,59 +3,86 @@ var map2 = {};
 window.onload = async function() {
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
-          const drugName = event.target.value;
-          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year", map)) == 1){
+            const drugName = event.target.value;
+
+            let startDate = document.getElementById("startDate0").value;
+            if(startDate){
+                startDate = startDate.replace(/-/g, "");
+                //console.log("Start Date: ", startDate);
+            }
+            else{
+                //console.log("No start date provided");
+                startDate = "20100101";
+            }
+
+            let endDate = document.getElementById("endDate0").value;
+            if(endDate){
+                endDate = endDate.replace(/-/g, "");
+                //console.log("End Date: ", endDate);
+            }
+            else{
+                //console.log("No end date provided");
+                endDate = "20240101";
+            }
+
+            if((+endDate) <= (+startDate)){
+                alert("End date must be later than start date");
+                return;
+            }
+
+            const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
+            if((await searchDrug(drugName, startDate, endDate, 'desc', 1, batches, "year", map)) == 1){
                 alert("No data found for " + drugName);
                 return;
-          }
-      
-          const data = [{
-              x: Object.keys(map),
-              y: Object.values(map),
-              type: 'bar',
-              marker: {color: 'green'}
-          }]
-      
-          const layout = {
-              title: "Adverse Drug Events for " + drugName,
-              xaxis: {title: "Year"},
-              yaxis: {title: "Count"}
-          }
-      
-          Plotly.newPlot('plot1', data, layout, 
+            }
+
+            const data = [{
+                x: Object.keys(map),
+                y: Object.values(map),
+                type: 'bar',
+                marker: {color: 'green'}
+            }]
+
+            const layout = {
+                title: "Adverse Drug Events for " + drugName,
+                xaxis: {title: "Year"},
+                yaxis: {title: "Count"}
+            }
+
+            Plotly.newPlot('plot1', data, layout, 
             {responsive: true}
-          );
+            );
         }
     });
 
     document.getElementById("search-input-1").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
-          const drugName = event.target.value;
-          if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year", map)) == 1){
+            const drugName = event.target.value;
+            if((await searchDrug(drugName, "20100101", "20240101", 'desc', 1, 14, "year", map)) == 1){
                 alert("No data found for " + drugName);
                 return;
-          }
-      
-          const data = [{
-              x: Object.keys(map),
-              y: Object.values(map),
-              type: 'bar',
-              marker: {color: 'green'}
-          }]
-      
-          const layout = {
-              width: 600,
-              title: "Adverse Drug Events for " + drugName,
-              xaxis: {title: "Year"},
-              yaxis: {title: "Count"}
-          }
-      
-          Plotly.newPlot('plot1', data, layout, 
+            }
+
+            const data = [{
+                x: Object.keys(map),
+                y: Object.values(map),
+                type: 'bar',
+                marker: {color: 'green'}
+            }]
+
+            const layout = {
+                width: 600,
+                title: "Adverse Drug Events for " + drugName,
+                xaxis: {title: "Year"},
+                yaxis: {title: "Count"}
+            }
+
+            Plotly.newPlot('plot1', data, layout, 
             {
                 responsive: true,
                 autosize:true
             }
-          );
+            );
         }
     });
 
