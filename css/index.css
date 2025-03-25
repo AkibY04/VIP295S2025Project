@@ -33,6 +33,7 @@ body {
     flex-grow: 1;
     display: flex;
     justify-content: center;
+    margin-left: 20%;
     margin-bottom: 0.4em;
 }
 
@@ -49,6 +50,7 @@ body {
     /* display: none; */
     border-radius: 12em;
     margin-left: 10vw;
+
 }
 
 #search-input-0 input {
@@ -130,6 +132,10 @@ body {
     opacity: 1;
 }
 
-.dateInput {
+.dateStartWrapper {
+    margin-right: 70%;
+}
 
+.dateEndWrapper {
+    margin-right: 10%;
 }
