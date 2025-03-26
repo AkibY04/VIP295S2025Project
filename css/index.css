@@ -33,7 +33,6 @@ body {
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    margin-left: 20%;
     margin-bottom: 0.4em;
 }
 
@@ -49,7 +48,8 @@ body {
 #search-input-0 {
     /* display: none; */
     border-radius: 12em;
-    margin-left: 10vw;
+    /* margin-left: 10vw; */
+    /* margin-right: 40vw; */
 
 }
 
@@ -133,9 +133,20 @@ body {
 }
 
 .dateStartWrapper {
-    margin-right: 70%;
+    /* margin-right: 70%; */
 }
 
 .dateEndWrapper {
-    margin-right: 10%;
+    /* margin-right: 10%; */
+}
+
+#testWrap {
+    /* display: flex; */
+    /* align-items: center;  */
+    margin-left:5%
+}
+
+#startDate2 {
+    /* display: flex; */
+    /* justify-content: center; */
 }
