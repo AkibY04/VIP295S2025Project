@@ -120,11 +120,11 @@ window.onload = async function() {
           let startDate = document.getElementById("startDate0").value;
           if(startDate){
               startDate = startDate.replace(/-/g, "");
-              console.log("Start Date: ", startDate);
+            //   console.log("Start Date: ", startDate);
           }
           else{
               console.log("No start date provided");
-              startDate = "20100101";
+            //   startDate = "20100101";
           }
 
           let endDate = document.getElementById("endDate0").value;
@@ -139,6 +139,7 @@ window.onload = async function() {
 
           if((+endDate) <= (+startDate)){
               alert("End date must be later than start date");
+
               return;
           }
 
