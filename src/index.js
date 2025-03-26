@@ -135,6 +135,10 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-2").innerHTML="none"
         document.getElementById("search-input-2").style.display="none";
         document.getElementById("singleDrugSearchDateInputs").style.display="none";
+        document.getElementById("startDate0").value="";
+        document.getElementById("startDate1").value="";
+        document.getElementById("endDate0").value="";
+        document.getElementById("endDate1").value="";
     }
     // DOUBLE SEARCH BAR
     else{
@@ -145,6 +149,10 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-1").style.display="block"
         document.getElementById("search-input-2").style.display="block";
         document.getElementById("singleDrugSearchDateInputs").style.display="block";
+        document.getElementById("startDate0").value="";
+        document.getElementById("startDate1").value="";
+        document.getElementById("endDate0").value="";
+        document.getElementById("endDate1").value="";
 
     }
 
