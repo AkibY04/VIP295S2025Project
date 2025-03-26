@@ -1,30 +1,33 @@
 var map = {};
 var map2 = {};
 window.onload = async function() {
+    //Single drug search bar
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
             const drugName = event.target.value;
 
             let startDate = document.getElementById("startDate0").value;
             if(startDate){
-                startDate = startDate.replace(/-/g, "");
+                startDate += "1231"
                 //console.log("Start Date: ", startDate);
             }
             else{
                 //console.log("No start date provided");
-                startDate = "20100101";
+                startDate = "20101231";
             }
 
             let endDate = document.getElementById("endDate0").value;
             if(endDate){
-                endDate = endDate.replace(/-/g, "");
+                endDate += "1231"
                 //console.log("End Date: ", endDate);
             }
             else{
                 //console.log("No end date provided");
-                endDate = "20240101";
+                endDate = "20241231";
             }
 
+            // console.log("EndDate: ", endDate);
+            // console.log("StartDate: ", startDate)
             if((+endDate) <= (+startDate)){
                 alert("End date must be later than start date");
                 return;
@@ -55,30 +58,33 @@ window.onload = async function() {
         }
     });
 
+    //Left drug search bar
     document.getElementById("search-input-1").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
             const drugName = event.target.value;
 
             let startDate = document.getElementById("startDate1").value;
             if(startDate){
-                startDate = startDate.replace(/-/g, "");
+                startDate += "1231"
                 //console.log("Start Date: ", startDate);
             }
             else{
                 //console.log("No start date provided");
-                startDate = "20100101";
+                startDate = "20101231";
             }
 
             let endDate = document.getElementById("endDate1").value;
             if(endDate){
-                endDate = endDate.replace(/-/g, "");
+                endDate += "1231"
                 //console.log("End Date: ", endDate);
             }
             else{
                 //console.log("No end date provided");
-                endDate = "20240101";
+                endDate = "20241231";
             }
 
+            // console.log("EndDate: ", endDate);
+            // console.log("StartDate: ", startDate)
             if((+endDate) <= (+startDate)){
                 alert("End date must be later than start date");
                 return;
@@ -113,35 +119,36 @@ window.onload = async function() {
         }
     });
 
+    //Right drug search bar
     document.getElementById("search-input-2").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
-          const drugName = event.target.value;
+            const drugName = event.target.value;
 
-          let startDate = document.getElementById("startDate0").value;
-          if(startDate){
-              startDate = startDate.replace(/-/g, "");
-            //   console.log("Start Date: ", startDate);
-          }
-          else{
-              console.log("No start date provided");
-            //   startDate = "20100101";
-          }
+            let startDate = document.getElementById("startDate0").value;
+            if(startDate){
+            startDate += "1231"
+            //console.log("Start Date: ", startDate);
+            }
+            else{
+                //console.log("No start date provided");
+                startDate = "20101231";
+            }
 
-          let endDate = document.getElementById("endDate0").value;
-          if(endDate){
-              endDate = endDate.replace(/-/g, "");
-              //console.log("End Date: ", endDate);
-          }
-          else{
-              //console.log("No end date provided");
-              endDate = "20240101";
-          }
+            let endDate = document.getElementById("endDate0").value;
+            if(endDate){
+                endDate += "1231"
+                //console.log("End Date: ", endDate);
+            }
+            else{
+                //console.log("No end date provided");
+                endDate = "20241231";
+            }
 
-          if((+endDate) <= (+startDate)){
-              alert("End date must be later than start date");
+            if((+endDate) <= (+startDate)){
+                alert("End date must be later than start date");
 
-              return;
-          }
+                return;
+            }
 
           const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
           if((await searchDrug(drugName, startDate, endDate, 'desc', 1, batches, "year", map2)) == 1){
@@ -190,9 +197,9 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-2").innerHTML="none"
         document.getElementById("search-input-2").style.display="none";
         document.getElementById("singleDrugSearchDateInputs").style.display="none";
-        document.getElementById("startDate0").value="";
+        document.getElementById("startDate0").value="2011";
         document.getElementById("startDate1").value="";
-        document.getElementById("endDate0").value="";
+        document.getElementById("endDate0").value="2024";
         document.getElementById("endDate1").value="";
     }
     // DOUBLE SEARCH BAR
@@ -204,10 +211,10 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-1").style.display="block"
         document.getElementById("search-input-2").style.display="block";
         document.getElementById("singleDrugSearchDateInputs").style.display="block";
-        document.getElementById("startDate0").value="";
-        document.getElementById("startDate1").value="";
-        document.getElementById("endDate0").value="";
-        document.getElementById("endDate1").value="";
+        document.getElementById("startDate0").value="2011";
+        document.getElementById("startDate1").value="2011";
+        document.getElementById("endDate0").value="2024";
+        document.getElementById("endDate1").value="2024";
 
     }
 
