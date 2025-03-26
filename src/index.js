@@ -125,6 +125,7 @@ window.onload = async function() {
 };
 
 function toggleSearchbarVisibility(){
+    // SINGLE SEARCH BAR
     if(document.getElementById("search-input-0").style.display=="none"){
         Plotly.purge('plot1');
         Plotly.purge('plot2'); 
@@ -133,7 +134,9 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-1").style.display="none"
         document.getElementById("search-input-2").innerHTML="none"
         document.getElementById("search-input-2").style.display="none";
+        document.getElementById("singleDrugSearchDateInputs").style.display="none";
     }
+    // DOUBLE SEARCH BAR
     else{
         Plotly.purge('plot1');
         Plotly.purge('plot2'); 
@@ -141,6 +144,8 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-0").style.display="none";
         document.getElementById("search-input-1").style.display="block"
         document.getElementById("search-input-2").style.display="block";
+        document.getElementById("singleDrugSearchDateInputs").style.display="block";
+
     }
 
 }

@@ -132,21 +132,3 @@ body {
     opacity: 1;
 }
 
-.dateStartWrapper {
-    /* margin-right: 70%; */
-}
-
-.dateEndWrapper {
-    /* margin-right: 10%; */
-}
-
-#testWrap {
-    /* display: flex; */
-    /* align-items: center;  */
-    margin-left:5%
-}
-
-#startDate2 {
-    /* display: flex; */
-    /* justify-content: center; */
-}
