@@ -220,37 +220,6 @@ function toggleSearchbarVisibility(){
 
 }
 
-async function aggregateData(dateStart, dateEnd, order, limit, batches){
-
-    for(let i = 0; i < batches; i++){
-        let searchRange = `search=receivedate:[${dateStart}+TO+${dateEnd}]`;
-        let searchStr = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
-        let response = await fetch(searchStr);
-
-        const json = await response.json();
-        for(let i = 0; i < json.results.length; i++){
-            //Access patient information
-            console.log("==========");
-            const patient = json.results[i].patient;
-    
-            //Access drug information
-            patient.drug.forEach((drug, index) => {
-                //console.log(`Drug ${index + 1} - Medicinal Product:`, drug.medicinalproduct);
-                //console.log(`Drug Indication:`, drug.drugindication);
-                if (drug.medicinalproduct in map){
-                    map[drug.medicinalproduct] = map[drug.medicinalproduct]+1;
-                }
-                else {
-                    map[drug.medicinalproduct] = 1
-                }
-            });
-        }
-        // update search query
-        dateStart   = getDateAndWeekBefore(dateStart);
-        dateEnd     = getDateAndWeekBefore(dateEnd);
-    }
-}
-
 // Retrieves the date before the given date in dateInput
 // mode: 1 "week" / "month" / "year" / "day" before the given date
 function getDateBefore(dateInput, mode) {
