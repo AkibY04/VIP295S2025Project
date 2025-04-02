@@ -4,6 +4,11 @@ var tempMap = {};
 var tempMap2 = {};
 
 window.onload = async function() {
+    document.getElementById("startDate1").style.display = "none";
+    document.getElementById("endDate1").style.display = "none";
+    document.getElementById("search-input-1").style.display="none"
+    document.getElementById("search-input-2").style.display="none";
+
     //Single drug search bar
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
@@ -177,7 +182,7 @@ window.onload = async function() {
               x: Object.keys(map2),
               y: Object.values(map2),
               type: 'bar',
-              marker: {color: 'green'}
+              marker: {color: 'blue'}
           }]
       
           const layout = {
@@ -229,12 +234,13 @@ async function generateMonthGraph(drugName, year, plotID){
         else if (plotID == 'plot2')
             map2 = tempMap2;
 
-
         const data = [{
             x: Object.keys(plotNumber == 1 ? map : map2),
             y: Object.values(plotNumber == 1 ? map : map2),
             type: 'bar',
-            marker: {color: 'green'}
+            marker: {
+                color: plotNumber == 1 ? 'green' : 'blue'
+            }
         }]
 
         const layout = {
@@ -264,17 +270,17 @@ async function generateMonthGraph(drugName, year, plotID){
         x: Object.keys(plotNumber == 1 ? map : map2),
         y: Object.values(plotNumber == 1 ? map : map2),
         type: 'bar',
-        marker: {color: 'green'}
-    }];
-    
+        marker: {
+            color: plotNumber == 1 ? 'green' : 'blue'
+        }
+    }]
 
     const layout = {
         title: "Adverse Drug Events for " + drugName,
-        xaxis: {title: "Month"},
+        xaxis: {title: "Year"},
         yaxis: {title: "Count"}
     }
 
-    console.log('plot'+plotNumber);
     Plotly.newPlot('plot'+plotNumber, data, layout,
     {
         responsive: true,
@@ -305,14 +311,18 @@ function toggleSearchbarVisibility(){
         Plotly.purge('plot2'); 
         document.getElementById("search-input-0").innerHTML="none";
         document.getElementById("search-input-0").style.display="none";
+
         document.getElementById("search-input-1").style.display="block"
         document.getElementById("search-input-2").style.display="block";
+
         document.getElementById("singleDrugSearchDateInputs").style.display="block";
+        
+        document.getElementById("startDate1").style.display = "block";
+        document.getElementById("endDate1").style.display = "block";
         document.getElementById("startDate0").value="2011";
         document.getElementById("startDate1").value="2011";
         document.getElementById("endDate0").value="2024";
         document.getElementById("endDate1").value="2024";
-
     }
 
 }
