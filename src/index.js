@@ -52,7 +52,7 @@ window.onload = async function() {
             const layout = {
                 title: "Adverse Drug Events for " + drugName,
                 xaxis: {title: "Year"},
-                yaxis: {title: "Count"}
+                yaxis: {title: "Count"},
             }
 
             Plotly.newPlot('plot1', data, layout,
@@ -116,7 +116,6 @@ window.onload = async function() {
             }]
 
             const layout = {
-                width: 600,
                 title: "Adverse Drug Events for " + drugName,
                 xaxis: {title: "Year"},
                 yaxis: {title: "Count"}
@@ -182,8 +181,6 @@ window.onload = async function() {
           }]
       
           const layout = {
-              width: 600,
-
               title: "Adverse Drug Events for " + drugName,
               xaxis: {title: "Year"},
               yaxis: {title: "Count"}
