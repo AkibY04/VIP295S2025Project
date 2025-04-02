@@ -1,5 +1,8 @@
 var map = {};
 var map2 = {};
+var tempMap = {};
+var tempMap2 = {};
+
 window.onload = async function() {
     //Single drug search bar
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
@@ -34,7 +37,7 @@ window.onload = async function() {
             }
 
             const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
-            if((await searchDrug(drugName, startDate, endDate, 'desc', 1, batches, "year", map)) == 1){
+            if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map)) == 1){
                 alert("No data found for " + drugName);
                 return;
             }
@@ -52,9 +55,18 @@ window.onload = async function() {
                 yaxis: {title: "Count"}
             }
 
-            Plotly.newPlot('plot1', data, layout, 
-            {responsive: true}
-            );
+            Plotly.newPlot('plot1', data, layout,
+            {
+                responsive: true,
+            }).then(()=> {
+                console.log("Boom graph made!");
+                
+                document.getElementById("plot1").on('plotly_click', function(data){
+                    generateMonthGraph(drugName, data.points[0].x, 'plot1');
+                    console.log(data.points[0].x);
+                });
+            }).catch(error => console.error("Plotly Error:", error));
+    
         }
     });
 
@@ -91,7 +103,7 @@ window.onload = async function() {
             }
 
             const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
-            if((await searchDrug(drugName, startDate, endDate, 'desc', 1, batches, "year", map)) == 1){
+            if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map)) == 1){
                 alert("No data found for " + drugName);
                 return;
             }
@@ -114,8 +126,14 @@ window.onload = async function() {
             {
                 responsive: true,
                 autosize:true
-            }
-            );
+            }).then(()=> {
+                console.log("Boom graph made!");
+                
+                document.getElementById("plot1").on('plotly_click', function(data){
+                    generateMonthGraph(drugName, data.points[0].x, 'plot1');
+                    console.log(data.points[0].x);
+                });
+            }).catch(error => console.error("Plotly Error:", error));;
         }
     });
 
@@ -151,7 +169,7 @@ window.onload = async function() {
             }
 
           const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
-          if((await searchDrug(drugName, startDate, endDate, 'desc', 1, batches, "year", map2)) == 1){
+          if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map2)) == 1){
               alert("No data found for " + drugName);
               return;
           }
@@ -175,8 +193,14 @@ window.onload = async function() {
             {
                 responsive: true, 
                 autosize:true
-            }
-          );
+            }).then(()=> {
+                console.log("Boom graph made!");
+                
+                document.getElementById("plot2").on('plotly_click', function(data){
+                    generateMonthGraph(drugName, data.points[0].x, 'plot2');
+                    console.log(data.points[0].x);
+                });
+            }).catch(error => console.error("Plotly Error:", error));;
         }
     });
 
@@ -186,6 +210,82 @@ window.onload = async function() {
 
 };
 
+async function generateMonthGraph(drugName, year, plotID){
+    let plotNumber = plotID.substring(4,5);
+    console.log(plotNumber);
+    if (plotID == 'plot1')
+        tempMap = {...map};
+    else if (plotID == 'plot2')
+        tempMap2 = {...map2};
+
+    Plotly.purge(plotID);
+
+    let button = document.createElement("button");
+    button.id="backButton"+plotNumber;
+    button.innerText="GO BACK";
+    button.addEventListener('click', async function() {
+        Plotly.purge(plotID);
+
+        if (plotID == 'plot1')
+            map = tempMap;
+
+        else if (plotID == 'plot2')
+            map2 = tempMap2;
+
+
+        const data = [{
+            x: Object.keys(plotNumber == 1 ? map : map2),
+            y: Object.values(plotNumber == 1 ? map : map2),
+            type: 'bar',
+            marker: {color: 'green'}
+        }]
+
+        const layout = {
+            title: "Adverse Drug Events for " + drugName,
+            xaxis: {title: "Year"},
+            yaxis: {title: "Count"}
+        }
+
+        Plotly.newPlot('plot'+plotNumber, data, layout,
+        {
+            responsive: true,
+        }).then(()=> {
+            console.log("Boom graph made!");
+            
+            document.getElementById("plot"+plotNumber).on('plotly_click', function(data){
+                generateMonthGraph(drugName, data.points[0].x, 'plot'+plotNumber);
+                console.log(data.points[0].x);
+            });
+        }).catch(error => console.error("Plotly Error:", error));
+
+        button.remove();
+    });
+
+    let endDate = year+'1231';
+    await searchDrug(drugName, endDate, 'desc', 1, 12, "month", plotNumber == 1 ? map : map2);
+    const data = [{
+        x: Object.keys(plotNumber == 1 ? map : map2),
+        y: Object.values(plotNumber == 1 ? map : map2),
+        type: 'bar',
+        marker: {color: 'green'}
+    }];
+    
+
+    const layout = {
+        title: "Adverse Drug Events for " + drugName,
+        xaxis: {title: "Month"},
+        yaxis: {title: "Count"}
+    }
+
+    console.log('plot'+plotNumber);
+    Plotly.newPlot('plot'+plotNumber, data, layout,
+    {
+        responsive: true,
+    });
+    document.getElementById("divForBackButton"+plotNumber).appendChild(button);
+    
+
+}
 function toggleSearchbarVisibility(){
     // SINGLE SEARCH BAR
     if(document.getElementById("search-input-0").style.display=="none"){
@@ -220,9 +320,13 @@ function toggleSearchbarVisibility(){
 
 }
 
+
 // Retrieves the date before the given date in dateInput
 // mode: 1 "week" / "month" / "year" / "day" before the given date
 function getDateBefore(dateInput, mode) {
+    // console.log("Date: ", dateInput);
+    // console.log("Mode: ", mode);
+
     const year = parseInt(dateInput.substring(0, 4), 10);
     const month = parseInt(dateInput.substring(4, 6), 10) - 1;
     const day = parseInt(dateInput.substring(6, 8), 10);
@@ -253,11 +357,26 @@ function getDateBefore(dateInput, mode) {
 // limit: the number of results
 // batches: the number of batches
 // dateFrequency: the date frequency between each batch (week, month, year, or day)
-async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches, dateFrequency, mapVar){
+async function searchDrug(searchTerm, dateEnd, order, limit, batches, dateFrequency, mapVar){
     Object.keys(mapVar).forEach(key => delete mapVar[key]);
-    let newStart    = dateStart = getDateBefore(dateEnd, dateFrequency);
-    let curYear     = dateEnd.substring(0,4);
-    curYear = Number(curYear); 
+    let newStart    = getDateBefore(dateEnd, dateFrequency);
+    // console.log(newStart);
+
+    let mapIndex;
+    if (dateFrequency == 'month') {
+        let currMonth = dateEnd.substring(4,6);
+        mapIndex = Number(currMonth);
+
+    }
+    else if (dateFrequency == 'day') {
+        let currDay = dateEnd.substring(6,8);
+        mapIndex = Number(currDay);
+    }
+    else {
+        let curYear = dateEnd.substring(0,4);
+        mapIndex = Number(curYear);
+    }
+
     for(let i = 0; i < batches; i++){
         let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:US+AND+receivedate:[${newStart}+TO+${dateEnd}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
@@ -270,17 +389,15 @@ async function searchDrug(searchTerm, dateStart, dateEnd, order, limit, batches,
             return 1;
         }
 
-        mapVar[curYear--] = json.meta.results.total;
+        mapVar[mapIndex--] = json.meta.results.total;
 
         // update search query
-        newStart   = getDateBefore(newStart, dateFrequency);
-        dateEnd     = getDateBefore(dateEnd, dateFrequency);
+        newStart = getDateBefore(newStart, dateFrequency);
+        dateEnd  = getDateBefore(dateEnd, dateFrequency);
 
-        console.log(searchStr);
-        console.log(json.meta.results.total);
-        // console.log(newStart , " + ", dateEnd);
+        // console.log(searchStr);
+        // console.log(json.meta.results.total);
     }
-    // console.log(Object.keys(map));
 
 }
 

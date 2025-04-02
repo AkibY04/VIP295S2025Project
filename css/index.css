@@ -95,10 +95,11 @@ body {
 
 #plot-holder {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;  
     width: 100%;
-    height: 90vh;
+    height: 80vh;
+    
 }
 
 #toggleButton{
@@ -132,3 +133,10 @@ body {
     opacity: 1;
 }
 
+#testDiv{
+    display: block
+}
+
+#backButton{
+    color:black;
+}
