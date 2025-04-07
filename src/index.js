@@ -299,7 +299,9 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-1").style.display="none"
         document.getElementById("search-input-2").innerHTML="none"
         document.getElementById("search-input-2").style.display="none";
+
         document.getElementById("singleDrugSearchDateInputs").style.display="none";
+
         document.getElementById("startDate0").value="2011";
         document.getElementById("startDate1").value="";
         document.getElementById("endDate0").value="2024";
@@ -315,7 +317,7 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-1").style.display="block"
         document.getElementById("search-input-2").style.display="block";
 
-        document.getElementById("singleDrugSearchDateInputs").style.display="block";
+        document.getElementById("singleDrugSearchDateInputs").style.display="flex";
         
         document.getElementById("startDate1").style.display = "block";
         document.getElementById("endDate1").style.display = "block";

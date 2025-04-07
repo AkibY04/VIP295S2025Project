@@ -7,13 +7,13 @@
   </head>
   <body>
     <div id="banner">
-      <div id="home-button">
+      <!-- <div id="home-button">
         <a href="index.html">
           <img src="home.png" alt="Home">
         </a>
-      </div>
+      </div> -->
 
-      <div id="singleDrugSearchDateInputs" style="margin-left:5%; display:none" >
+      <div id="singleDrugSearchDateInputs" style="display:none" >
         <div class="dateInput">
           <div class="dateStartWrapper">Start:<select name="Year" id="startDate1">
               <option value="2011">2011</option>
@@ -59,9 +59,10 @@
         <input type="text" id="search-input-1" autocomplete="off" placeholder="Drug 1" class="search-box">
         <input type="text" id="search-input-2" autocomplete="off" placeholder="Drug 2" class="search-box">  
       </div>
-      <div style="margin-right:5%">
+      
+      <div style="display: flex;">
         <div class="dateInput">
-          <div class="dateStartWrapper">Start:<select name="Year" id="startDate0">
+          <div class="dateStartWrapper">Start:<select name="Year" id="startDate0" style="display:block;">
               <option value="2011">2011</option>
               <option value="2012">2012</option>
               <option value="2013">2013</option>
@@ -80,7 +81,7 @@
           </div>
         </div>
         <div class="dateInput">
-          <div class="dateEndWrapper">End: <select name="Year" id="endDate0">
+          <div class="dateEndWrapper">End: <select name="Year" id="endDate0" style="display:block">
               <option value="2011">2011</option>
               <option value="2012">2012</option>
               <option value="2013">2013</option>
