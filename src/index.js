@@ -14,6 +14,8 @@ window.onload = async function() {
         if(event.key == 'Enter'){
             const drugName = event.target.value;
 
+            let country = document.getElementById("country0").value;
+
             let startDate = document.getElementById("startDate0").value;
             if(startDate){
                 startDate += "1231"
@@ -42,7 +44,7 @@ window.onload = async function() {
             }
 
             const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
-            if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map)) == 1){
+            if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map, country)) == 1){
                 alert("No data found for " + drugName);
                 return;
             }
@@ -55,7 +57,7 @@ window.onload = async function() {
             }]
 
             const layout = {
-                title: "Adverse Drug Events for " + drugName,
+                title: "Adverse Drug Events for " + drugName + " in " + country,
                 xaxis: {title: "Year"},
                 yaxis: {title: "Count"},
             }
@@ -67,7 +69,7 @@ window.onload = async function() {
                 console.log("Boom graph made!");
                 
                 document.getElementById("plot1").on('plotly_click', function(data){
-                    generateMonthGraph(drugName, data.points[0].x, 'plot1');
+                    generateMonthGraph(drugName, data.points[0].x, 'plot1', country);
                     console.log(data.points[0].x);
                 });
             }).catch(error => console.error("Plotly Error:", error));
@@ -80,6 +82,8 @@ window.onload = async function() {
         if(event.key == 'Enter'){
             const drugName = event.target.value;
 
+            let country = document.getElementById("country0").value;
+
             let startDate = document.getElementById("startDate0").value;
             if(startDate){
                 startDate += "1231"
@@ -108,7 +112,7 @@ window.onload = async function() {
             }
 
             const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
-            if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map)) == 1){
+            if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map, country)) == 1){
                 alert("No data found for " + drugName);
                 return;
             }
@@ -121,7 +125,7 @@ window.onload = async function() {
             }]
 
             const layout = {
-                title: "Adverse Drug Events for " + drugName,
+                title: "Adverse Drug Events for " + drugName + " in " + country,
                 xaxis: {title: "Year"},
                 yaxis: {title: "Count"}
             }
@@ -134,7 +138,7 @@ window.onload = async function() {
                 console.log("Boom graph made!");
                 
                 document.getElementById("plot1").on('plotly_click', function(data){
-                    generateMonthGraph(drugName, data.points[0].x, 'plot1');
+                    generateMonthGraph(drugName, data.points[0].x, 'plot1', country);
                     console.log(data.points[0].x);
                 });
             }).catch(error => console.error("Plotly Error:", error));;
@@ -145,6 +149,8 @@ window.onload = async function() {
     document.getElementById("search-input-2").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
             const drugName = event.target.value;
+
+            let country = document.getElementById("country1").value;
 
             let startDate = document.getElementById("startDate1").value;
             if(startDate){
@@ -173,7 +179,7 @@ window.onload = async function() {
             }
 
           const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
-          if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map2)) == 1){
+          if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map2, country)) == 1){
               alert("No data found for " + drugName);
               return;
           }
@@ -186,7 +192,7 @@ window.onload = async function() {
           }]
       
           const layout = {
-              title: "Adverse Drug Events for " + drugName,
+              title: "Adverse Drug Events for " + drugName + " in " + country,
               xaxis: {title: "Year"},
               yaxis: {title: "Count"}
           }
@@ -199,7 +205,7 @@ window.onload = async function() {
                 console.log("Boom graph made!");
                 
                 document.getElementById("plot2").on('plotly_click', function(data){
-                    generateMonthGraph(drugName, data.points[0].x, 'plot2');
+                    generateMonthGraph(drugName, data.points[0].x, 'plot2', country);
                     console.log(data.points[0].x);
                 });
             }).catch(error => console.error("Plotly Error:", error));;
@@ -212,7 +218,7 @@ window.onload = async function() {
 
 };
 
-async function generateMonthGraph(drugName, year, plotID){
+async function generateMonthGraph(drugName, year, plotID, country){
     let plotNumber = plotID.substring(4,5);
     console.log(plotNumber);
     if (plotID == 'plot1')
@@ -244,7 +250,7 @@ async function generateMonthGraph(drugName, year, plotID){
         }]
 
         const layout = {
-            title: "Adverse Drug Events for " + drugName,
+            title: "Adverse Drug Events for " + drugName + " in " + country,
             xaxis: {title: "Year"},
             yaxis: {title: "Count"}
         }
@@ -256,7 +262,7 @@ async function generateMonthGraph(drugName, year, plotID){
             console.log("Boom graph made!");
             
             document.getElementById("plot"+plotNumber).on('plotly_click', function(data){
-                generateMonthGraph(drugName, data.points[0].x, 'plot'+plotNumber);
+                generateMonthGraph(drugName, data.points[0].x, 'plot'+plotNumber, country);
                 console.log(data.points[0].x);
             });
         }).catch(error => console.error("Plotly Error:", error));
@@ -265,7 +271,7 @@ async function generateMonthGraph(drugName, year, plotID){
     });
 
     let endDate = year+'1231';
-    await searchDrug(drugName, endDate, 'desc', 1, 12, "month", plotNumber == 1 ? map : map2);
+    await searchDrug(drugName, endDate, 'desc', 1, 12, "month", plotNumber == 1 ? map : map2, country);
     const data = [{
         x: Object.keys(plotNumber == 1 ? map : map2),
         y: Object.values(plotNumber == 1 ? map : map2),
@@ -366,7 +372,7 @@ function getDateBefore(dateInput, mode) {
 // limit: the number of results
 // batches: the number of batches
 // dateFrequency: the date frequency between each batch (week, month, year, or day)
-async function searchDrug(searchTerm, dateEnd, order, limit, batches, dateFrequency, mapVar){
+async function searchDrug(searchTerm, dateEnd, order, limit, batches, dateFrequency, mapVar, country){
     Object.keys(mapVar).forEach(key => delete mapVar[key]);
     let newStart    = getDateBefore(dateEnd, dateFrequency);
     // console.log(newStart);
@@ -387,7 +393,7 @@ async function searchDrug(searchTerm, dateEnd, order, limit, batches, dateFreque
     }
 
     for(let i = 0; i < batches; i++){
-        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:US+AND+receivedate:[${newStart}+TO+${dateEnd}]`;
+        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${newStart}+TO+${dateEnd}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${limit}`;
         let response    = await fetch(searchStr);
         
