@@ -34,10 +34,10 @@ body {
 }
 
 #searchbar {
-    display: flex;
+    display: block;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 1em;
+    gap: 0.5em;
     /* margin-bottom: 1em; */
 }
 
@@ -48,7 +48,7 @@ body {
     outline: none;
     box-shadow: none;
     font-size: 1em;
-    /* margin-top: 5%; */
+    margin-top: 5%;
 }
 
 #toggleButton {
@@ -67,7 +67,8 @@ body {
     margin-left: 21vw;
     align-items: stretch;
     width: 75vw;
-    height: 100vh;
+    height: 100%;
+    z-index: 1000;
 }
 
 #plot1, #plot2 {

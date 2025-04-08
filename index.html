@@ -13,7 +13,62 @@
         </a>
       </div> -->
 
-      <div id="singleDrugSearchDateInputs" style="display:none" >
+      <div id="searchbar">
+
+        <div style="display: block;">
+          <div style="display: flex">
+            <div class="dateInput">
+              <div class="dateStartWrapper">Start:<select name="Year" id="startDate0" style="display:block;">
+                  <option value="2011">2011</option>
+                  <option value="2012">2012</option>
+                  <option value="2013">2013</option>
+                  <option value="2014">2014</option>
+                  <option value="2015">2015</option>
+                  <option value="2016">2016</option>
+                  <option value="2017">2017</option>
+                  <option value="2018">2018</option>
+                  <option value="2019">2019</option>
+                  <option value="2020">2020</option>
+                  <option value="2021">2021</option>
+                  <option value="2022">2022</option>
+                  <option value="2023">2023</option>
+                  <option value="2024">2024</option> 
+                </select>
+              </div>
+            </div>
+            <div class="dateInput">
+              <div class="dateEndWrapper">End: <select name="Year" id="endDate0" style="display:block">
+                  <option value="2011">2011</option>
+                  <option value="2012">2012</option>
+                  <option value="2013">2013</option>
+                  <option value="2014">2014</option>
+                  <option value="2015">2015</option>
+                  <option value="2016">2016</option>
+                  <option value="2017">2017</option>
+                  <option value="2018">2018</option>
+                  <option value="2019">2019</option>
+                  <option value="2020">2020</option>
+                  <option value="2021">2021</option>
+                  <option value="2022">2022</option>
+                  <option value="2023">2023</option>
+                  <option selected=true value="2024">2024</option> 
+                </select>
+              </div>
+            </div>
+            <div class="countrySelecter">Country: <select name="Year" id="endDate0" style="display:block;">
+              <option selected=true value="US">US</option> 
+              <option value="GB">GB</option>
+              <option value="CA">CA</option>
+              <option value="FR">FR</option>
+            </select>
+            </div>
+
+          </div>
+
+        <input type="text" id="search-input-0" autocomplete="off" placeholder="Drug Name" class="search-box">
+        <input type="text" id="search-input-1" autocomplete="off" placeholder="Drug 1" class="search-box">
+
+      <div id="singleDrugSearchDateInputs" style="display:none; margin-top: 10px" >
         <div class="dateInput">
           <div class="dateStartWrapper">Start:<select name="Year" id="startDate1">
               <option value="2011">2011</option>
@@ -52,52 +107,14 @@
             </select>
           </div>
         </div>
-      </div>
-
-      <div id="searchbar">
-        <input type="text" id="search-input-0" autocomplete="off" placeholder="Drug Name" class="search-box">
-        <input type="text" id="search-input-1" autocomplete="off" placeholder="Drug 1" class="search-box">
-
-        <div style="display: flex;">
-          <div class="dateInput">
-            <div class="dateStartWrapper">Start:<select name="Year" id="startDate0" style="display:block;">
-                <option value="2011">2011</option>
-                <option value="2012">2012</option>
-                <option value="2013">2013</option>
-                <option value="2014">2014</option>
-                <option value="2015">2015</option>
-                <option value="2016">2016</option>
-                <option value="2017">2017</option>
-                <option value="2018">2018</option>
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option> 
-              </select>
-            </div>
-          </div>
-          <div class="dateInput">
-            <div class="dateEndWrapper">End: <select name="Year" id="endDate0" style="display:block">
-                <option value="2011">2011</option>
-                <option value="2012">2012</option>
-                <option value="2013">2013</option>
-                <option value="2014">2014</option>
-                <option value="2015">2015</option>
-                <option value="2016">2016</option>
-                <option value="2017">2017</option>
-                <option value="2018">2018</option>
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option selected=true value="2024">2024</option> 
-              </select>
-            </div>
-          </div>
+        <div class="countrySelecter">Country: <select name="Year" id="endDate0" style="display:block;">
+          <option selected=true value="US">US</option> 
+          <option value="GB">GB</option>
+          <option value="CA">CA</option>
+          <option value="FR">FR</option>
+        </select>
         </div>
+      </div>
 
         <input type="text" id="search-input-2" autocomplete="off" placeholder="Drug 2" class="search-box">  
       </div>
@@ -108,6 +125,7 @@
         </button>
       </div>
     </div>
+    
     
     <div id="plot-holder">
       <div id="divForBackButton1"></div>

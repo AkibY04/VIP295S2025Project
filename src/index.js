@@ -80,7 +80,7 @@ window.onload = async function() {
         if(event.key == 'Enter'){
             const drugName = event.target.value;
 
-            let startDate = document.getElementById("startDate1").value;
+            let startDate = document.getElementById("startDate0").value;
             if(startDate){
                 startDate += "1231"
                 //console.log("Start Date: ", startDate);
@@ -90,7 +90,7 @@ window.onload = async function() {
                 startDate = "20101231";
             }
 
-            let endDate = document.getElementById("endDate1").value;
+            let endDate = document.getElementById("endDate0").value;
             if(endDate){
                 endDate += "1231"
                 //console.log("End Date: ", endDate);
@@ -146,7 +146,7 @@ window.onload = async function() {
         if(event.key == 'Enter'){
             const drugName = event.target.value;
 
-            let startDate = document.getElementById("startDate0").value;
+            let startDate = document.getElementById("startDate1").value;
             if(startDate){
             startDate += "1231"
             //console.log("Start Date: ", startDate);
@@ -156,7 +156,7 @@ window.onload = async function() {
                 startDate = "20101231";
             }
 
-            let endDate = document.getElementById("endDate0").value;
+            let endDate = document.getElementById("endDate1").value;
             if(endDate){
                 endDate += "1231"
                 //console.log("End Date: ", endDate);
