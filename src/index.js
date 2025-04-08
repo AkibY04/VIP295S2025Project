@@ -282,8 +282,8 @@ async function generateMonthGraph(drugName, year, plotID, country){
     }]
 
     const layout = {
-        title: "Adverse Drug Events for " + drugName,
-        xaxis: {title: "Year"},
+        title: "Adverse Drug Events for " + drugName + " in " + country,
+        xaxis: {title: "Month"},
         yaxis: {title: "Count"}
     }
 
