@@ -13,69 +13,79 @@ window.onload = async function() {
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
             const drugName = event.target.value;
-
+    
             let country = document.getElementById("country0").value;
-
+    
             let startDate = document.getElementById("startDate0").value;
             if(startDate){
-                startDate += "1231"
-                //console.log("Start Date: ", startDate);
-            }
-            else{
-                //console.log("No start date provided");
+                startDate += "1231";
+            } else {
                 startDate = "20101231";
             }
-
+    
             let endDate = document.getElementById("endDate0").value;
             if(endDate){
-                endDate += "1231"
-                //console.log("End Date: ", endDate);
-            }
-            else{
-                //console.log("No end date provided");
+                endDate += "1231";
+            } else {
                 endDate = "20241231";
             }
-
-            // console.log("EndDate: ", endDate);
-            // console.log("StartDate: ", startDate)
+    
             if((+endDate) <= (+startDate)){
                 alert("End date must be later than start date");
                 return;
             }
-
+    
             const batches = (+endDate.substring(0,4)) - (+startDate.substring(0,4)) + 1;
             if((await searchDrug(drugName, endDate, 'desc', 1, batches, "year", map, country)) == 1){
                 alert("No data found for " + drugName);
                 return;
             }
-
-            const data = [{
-                x: Object.keys(map),
-                y: Object.values(map),
+    
+            const xVals = Object.keys(map);
+            const yVals = Object.values(map);
+    
+            const initialData = [{
+                x: xVals,
+                y: new Array(yVals.length).fill(0),
                 type: 'bar',
-                marker: {color: 'green'}
-            }]
-
+                marker: { color: 'green' }
+            }];
+    
             const layout = {
                 title: "Adverse Drug Events for " + drugName + " in " + country,
-                xaxis: {title: "Year"},
-                yaxis: {title: "Count"},
-            }
-
-            Plotly.newPlot('plot1', data, layout,
-            {
-                responsive: true,
-            }).then(()=> {
+                xaxis: { title: "Year" },
+                yaxis: {
+                    title: "Count",
+                    range: [0, Math.max(...yVals) * 1.1]
+                }
+            };
+    
+            Plotly.newPlot('plot1', initialData, layout, {
+                responsive: true
+            }).then(() => {
+                Plotly.animate('plot1', {
+                    data: [{ y: yVals }],
+                    traces: [0]
+                }, {
+                    transition: {
+                        duration: 800,
+                        easing: 'cubic-in-out'
+                    },
+                    frame: {
+                        duration: 800
+                    }
+                });
+    
                 console.log("Boom graph made!");
-                
+    
                 document.getElementById("plot1").on('plotly_click', function(data){
                     generateMonthGraph(drugName, data.points[0].x, 'plot1', country);
                     console.log(data.points[0].x);
                 });
             }).catch(error => console.error("Plotly Error:", error));
-    
         }
     });
+    
 
     //Left drug search bar
     document.getElementById("search-input-1").addEventListener('keydown', async function(event) {
@@ -117,31 +127,48 @@ window.onload = async function() {
                 return;
             }
 
-            const data = [{
-                x: Object.keys(map),
-                y: Object.values(map),
+            const xVals = Object.keys(map);
+            const yVals = Object.values(map);
+    
+            const initialData = [{
+                x: xVals,
+                y: new Array(yVals.length).fill(0),
                 type: 'bar',
-                marker: {color: 'green'}
-            }]
-
+                marker: { color: 'green' }
+            }];
+    
             const layout = {
                 title: "Adverse Drug Events for " + drugName + " in " + country,
-                xaxis: {title: "Year"},
-                yaxis: {title: "Count"}
-            }
-
-            Plotly.newPlot('plot1', data, layout, 
-            {
-                responsive: true,
-                autosize:true
-            }).then(()=> {
+                xaxis: { title: "Year" },
+                yaxis: {
+                    title: "Count",
+                    range: [0, Math.max(...yVals) * 1.1]
+                }
+            };
+    
+            Plotly.newPlot('plot1', initialData, layout, {
+                responsive: true
+            }).then(() => {
+                Plotly.animate('plot1', {
+                    data: [{ y: yVals }],
+                    traces: [0]
+                }, {
+                    transition: {
+                        duration: 800,
+                        easing: 'cubic-in-out'
+                    },
+                    frame: {
+                        duration: 800
+                    }
+                });
+    
                 console.log("Boom graph made!");
-                
+    
                 document.getElementById("plot1").on('plotly_click', function(data){
                     generateMonthGraph(drugName, data.points[0].x, 'plot1', country);
                     console.log(data.points[0].x);
                 });
-            }).catch(error => console.error("Plotly Error:", error));;
+            }).catch(error => console.error("Plotly Error:", error));
         }
     });
 
@@ -184,31 +211,48 @@ window.onload = async function() {
               return;
           }
       
-          const data = [{
-              x: Object.keys(map2),
-              y: Object.values(map2),
+          const xVals = Object.keys(map2);
+          const yVals = Object.values(map2);
+  
+          const initialData = [{
+              x: xVals,
+              y: new Array(yVals.length).fill(0),
               type: 'bar',
-              marker: {color: 'blue'}
-          }]
-      
+              marker: { color: 'blue' }
+          }];
+  
           const layout = {
               title: "Adverse Drug Events for " + drugName + " in " + country,
-              xaxis: {title: "Year"},
-              yaxis: {title: "Count"}
-          }
-      
-          Plotly.newPlot('plot2', data, layout, 
-            {
-                responsive: true, 
-                autosize:true
-            }).then(()=> {
-                console.log("Boom graph made!");
-                
-                document.getElementById("plot2").on('plotly_click', function(data){
-                    generateMonthGraph(drugName, data.points[0].x, 'plot2', country);
-                    console.log(data.points[0].x);
-                });
-            }).catch(error => console.error("Plotly Error:", error));;
+              xaxis: { title: "Year" },
+              yaxis: {
+                  title: "Count",
+                  range: [0, Math.max(...yVals) * 1.1]
+              }
+          };
+  
+          Plotly.newPlot('plot2', initialData, layout, {
+              responsive: true
+          }).then(() => {
+              Plotly.animate('plot2', {
+                  data: [{ y: yVals }],
+                  traces: [0]
+              }, {
+                  transition: {
+                      duration: 800,
+                      easing: 'cubic-in-out'
+                  },
+                  frame: {
+                      duration: 800
+                  }
+              });
+  
+              console.log("Boom graph made!");
+  
+              document.getElementById("plot2").on('plotly_click', function(data){
+                  generateMonthGraph(drugName, data.points[0].x, 'plot2', country);
+                  console.log(data.points[0].x);
+              });
+          }).catch(error => console.error("Plotly Error:", error));
         }
     });
 
@@ -218,52 +262,67 @@ window.onload = async function() {
 
 };
 
-async function generateMonthGraph(drugName, year, plotID, country){
-    let plotNumber = plotID.substring(4,5);
+async function generateMonthGraph(drugName, year, plotID, country) {
+    let plotNumber = plotID.substring(4, 5);
     console.log(plotNumber);
-    if (plotID == 'plot1')
-        tempMap = {...map};
-    else if (plotID == 'plot2')
-        tempMap2 = {...map2};
+
+    // Save existing map
+    if (plotID === 'plot1') tempMap = { ...map };
+    else if (plotID === 'plot2') tempMap2 = { ...map2 };
 
     Plotly.purge(plotID);
 
     let button = document.createElement("button");
-    button.id="backButton"+plotNumber;
-    button.innerText="GO BACK";
-    
-    button.addEventListener('click', async function() {
+    button.id = "backButton" + plotNumber;
+    button.innerText = "GO BACK";
+
+    button.addEventListener('click', async function () {
         Plotly.purge(plotID);
 
-        if (plotID == 'plot1')
-            map = tempMap;
+        if (plotID === 'plot1') map = tempMap;
+        else if (plotID === 'plot2') map2 = tempMap2;
 
-        else if (plotID == 'plot2')
-            map2 = tempMap2;
+        const dataMap = plotNumber == 1 ? map : map2;
+        const xVals = Object.keys(dataMap);
+        const yVals = Object.values(dataMap);
+        const color = plotNumber == 1 ? 'green' : 'blue';
 
-        const data = [{
-            x: Object.keys(plotNumber == 1 ? map : map2),
-            y: Object.values(plotNumber == 1 ? map : map2),
+        const initialData = [{
+            x: xVals,
+            y: new Array(yVals.length).fill(0),
             type: 'bar',
-            marker: {
-                color: plotNumber == 1 ? 'green' : 'blue'
-            }
-        }]
+            marker: { color: color }
+        }];
 
         const layout = {
             title: "Adverse Drug Events for " + drugName + " in " + country,
-            xaxis: {title: "Year"},
-            yaxis: {title: "Count"}
-        }
+            xaxis: { title: "Year" },
+            yaxis: {
+                title: "Count",
+                range: [0, Math.max(...yVals) * 1.1]
+            }
+        };
 
-        Plotly.newPlot('plot'+plotNumber, data, layout,
-        {
-            responsive: true,
-        }).then(()=> {
+        Plotly.newPlot('plot' + plotNumber, initialData, layout, {
+            responsive: true
+        }).then(() => {
+            Plotly.animate('plot' + plotNumber, {
+                data: [{ y: yVals }],
+                traces: [0]
+            }, {
+                transition: {
+                    duration: 800,
+                    easing: 'cubic-in-out'
+                },
+                frame: {
+                    duration: 800
+                }
+            });
+
             console.log("Boom graph made!");
-            
-            document.getElementById("plot"+plotNumber).on('plotly_click', function(data){
-                generateMonthGraph(drugName, data.points[0].x, 'plot'+plotNumber, country);
+
+            document.getElementById("plot" + plotNumber).on('plotly_click', function (data) {
+                generateMonthGraph(drugName, data.points[0].x, 'plot' + plotNumber, country);
                 console.log(data.points[0].x);
             });
         }).catch(error => console.error("Plotly Error:", error));
@@ -271,30 +330,51 @@ async function generateMonthGraph(drugName, year, plotID, country){
         button.remove();
     });
 
-    let endDate = year+'1231';
+    let endDate = year + '1231';
     await searchDrug(drugName, endDate, 'desc', 1, 12, "month", plotNumber == 1 ? map : map2, country);
-    const data = [{
-        x: Object.keys(plotNumber == 1 ? map : map2),
-        y: Object.values(plotNumber == 1 ? map : map2),
+
+    const dataMap = plotNumber == 1 ? map : map2;
+    const xVals = Object.keys(dataMap);
+    const yVals = Object.values(dataMap);
+    const color = plotNumber == 1 ? 'green' : 'blue';
+
+    const initialData = [{
+        x: xVals,
+        y: new Array(yVals.length).fill(0),
         type: 'bar',
-        marker: {
-            color: plotNumber == 1 ? 'green' : 'blue'
-        }
-    }]
+        marker: { color: color }
+    }];
 
     const layout = {
         title: "Adverse Drug Events for " + drugName + " in " + country,
-        xaxis: {title: "Month"},
-        yaxis: {title: "Count"}
-    }
+        xaxis: { title: "Month" },
+        yaxis: {
+            title: "Count",
+            range: [0, Math.max(...yVals) * 1.1]
+        }
+    };
 
-    Plotly.newPlot('plot'+plotNumber, data, layout,
-    {   
-        responsive: true,
+    Plotly.newPlot('plot' + plotNumber, initialData, layout, {
+        responsive: true
+    }).then(() => {
+        Plotly.animate('plot' + plotNumber, {
+            data: [{ y: yVals }],
+            traces: [0]
+        }, {
+            transition: {
+                duration: 800,
+                easing: 'cubic-in-out'
+            },
+            frame: {
+                duration: 800
+            }
+        });
     });
-    document.getElementById("divForBackButton"+plotNumber).appendChild(button);
 
+    document.getElementById("divForBackButton" + plotNumber).appendChild(button);
 }
+
+
 function toggleSearchbarVisibility(){
     // SINGLE SEARCH BAR
     if(document.getElementById("search-input-0").style.display=="none"){
