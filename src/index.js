@@ -301,15 +301,16 @@ function toggleSearchbarVisibility(){
         Plotly.purge('plot1');
         Plotly.purge('plot2'); 
         document.getElementById("search-input-0").style.display="block";
-        document.getElementById("search-input-1").innerHTML="none"
+        document.getElementById("search-input-0").value=""
+        document.getElementById("search-input-1").value=""
+        document.getElementById("search-input-2").value=""
         document.getElementById("search-input-1").style.display="none"
-        document.getElementById("search-input-2").innerHTML="none"
         document.getElementById("search-input-2").style.display="none";
 
         document.getElementById("singleDrugSearchDateInputs").style.display="none";
 
-        // document.getElementById("backButton1").remove();
-        // document.getElementById("backButton2").remove();
+        document.getElementById("divForBackButton1").innerText="";
+        document.getElementById("divForBackButton2").innerText="";
         // document.getElementById("divForBackButton1").style.display="none";
         // document.getElementById("divForBackButton2").style.display="none";
 
@@ -322,18 +323,22 @@ function toggleSearchbarVisibility(){
     else{
         Plotly.purge('plot1');
         Plotly.purge('plot2'); 
-        document.getElementById("search-input-0").innerHTML="none";
         document.getElementById("search-input-0").style.display="none";
 
         document.getElementById("search-input-1").style.display="block"
         document.getElementById("search-input-2").style.display="block";
 
+        document.getElementById("search-input-0").value=""
+        document.getElementById("search-input-1").value=""
+        document.getElementById("search-input-2").value=""
+
         document.getElementById("singleDrugSearchDateInputs").style.display="flex";
-        // document.getElementById("divForBackButton1").style.display="none";
-        // document.getElementById("divForBackButton2").style.display="none";
+        document.getElementById("divForBackButton1").innerText="";
+        document.getElementById("divForBackButton2").innerText="";
 
         // document.getElementById("backButton1").remove();
         // document.getElementById("backButton2").remove();
+
         document.getElementById("startDate1").style.display = "block";
         document.getElementById("endDate1").style.display = "block";
         document.getElementById("startDate0").value="2011";
