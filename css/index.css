@@ -62,16 +62,18 @@ body {
 }
 
 #plot-holder {
-    /* display: flex;
+    display: flex;
     flex-direction: column;
     margin-left: 21vw;
     align-items: stretch;
     width: 75vw;
     height: 100%;
-    z-index: 1000; */
+    z-index: 1000;
     position: fixed;
-    top:5vh;
-    left:25vw;
+    top:5%;
+    
+    /* top:5%; */
+    /* left:30%;  */
 }
 
 #plot1, #plot2 {

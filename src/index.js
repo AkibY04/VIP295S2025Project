@@ -231,6 +231,7 @@ async function generateMonthGraph(drugName, year, plotID, country){
     let button = document.createElement("button");
     button.id="backButton"+plotNumber;
     button.innerText="GO BACK";
+    
     button.addEventListener('click', async function() {
         Plotly.purge(plotID);
 
@@ -288,11 +289,10 @@ async function generateMonthGraph(drugName, year, plotID, country){
     }
 
     Plotly.newPlot('plot'+plotNumber, data, layout,
-    {
+    {   
         responsive: true,
     });
     document.getElementById("divForBackButton"+plotNumber).appendChild(button);
-    
 
 }
 function toggleSearchbarVisibility(){
@@ -307,6 +307,11 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-2").style.display="none";
 
         document.getElementById("singleDrugSearchDateInputs").style.display="none";
+
+        // document.getElementById("backButton1").remove();
+        // document.getElementById("backButton2").remove();
+        // document.getElementById("divForBackButton1").style.display="none";
+        // document.getElementById("divForBackButton2").style.display="none";
 
         document.getElementById("startDate0").value="2011";
         document.getElementById("startDate1").value="";
@@ -324,7 +329,11 @@ function toggleSearchbarVisibility(){
         document.getElementById("search-input-2").style.display="block";
 
         document.getElementById("singleDrugSearchDateInputs").style.display="flex";
-        
+        // document.getElementById("divForBackButton1").style.display="none";
+        // document.getElementById("divForBackButton2").style.display="none";
+
+        // document.getElementById("backButton1").remove();
+        // document.getElementById("backButton2").remove();
         document.getElementById("startDate1").style.display = "block";
         document.getElementById("endDate1").style.display = "block";
         document.getElementById("startDate0").value="2011";
