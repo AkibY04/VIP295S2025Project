@@ -6,6 +6,12 @@ body {
     height: 100vh;
 }
 
+* {
+    font-family: 'Manrope', sans-serif;
+
+    font-size: 1em;
+}
+
 #banner {
     display: flex;
     flex-direction: column;
@@ -55,14 +61,15 @@ body {
 }
 
 #toggleButton {
-    width: 15vw;
-    height: 4vh;
+    width: 15vw; /* match .search-box */
+    padding: 0.4em;
+    font-size: 1em;
     border: 0.1em solid #000000;
-    border-radius: 12em;
-    color: black;
-    cursor: pointer;
-    margin-top: 1em;
+    border-radius: 2em;
+    margin: 1em auto 0 auto;
+    text-align: center;
 }
+
 
 #plot-holder {
     display: flex;
