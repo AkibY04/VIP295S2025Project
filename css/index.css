@@ -4,10 +4,13 @@ body {
     overflow-x: hidden;
     word-wrap: break-word;
     height: 100vh;
+    /* background-color: #081937; */
 }
+
 
 * {
     font-family: 'Manrope', sans-serif;
+    /* background-color: #081937; */
 
     font-size: 1em;
 }
@@ -24,10 +27,12 @@ body {
     z-index: 100;
     text-align: left;
     border-right: 0.07em solid black;
-    background-color: white;
+    /* background-color: white; */
+    background-color: #051125;
+    border-radius: 0.35em;
     position: fixed;
     top: 0;
-    left: 0;
+    left: -10;
 }
 
 #home-button {
@@ -91,4 +96,8 @@ body {
     height: 45vh;
     /* margin-bottom: 2%; */
     z-index: -1;
+}
+
+.dateStartWrapper, .dateEndWrapper, .CountrySelector{
+    color:white;
 }
