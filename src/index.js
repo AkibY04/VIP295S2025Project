@@ -274,7 +274,15 @@ async function generateMonthGraph(drugName, year, plotID, country) {
 
     let button = document.createElement("button");
     button.id = "backButton" + plotNumber;
-    button.innerText = "GO BACK";
+    
+    let img = document.createElement("img");
+    img.src = "backArrow.png"; 
+    img.alt = "Go Back";
+    img.style.width = "30px";
+    img.style.height = "30px";
+
+    button.appendChild(img);
+
 
     button.addEventListener('click', async function () {
         Plotly.purge(plotID);
