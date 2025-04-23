@@ -8,7 +8,9 @@ window.onload = async function() {
     document.getElementById("endDate1").style.display = "none";
     document.getElementById("search-input-1").style.display="none"
     document.getElementById("search-input-2").style.display="none";
-
+    
+    crazyRez("albuterol", "1", "2020", "US");
+    
     //Single drug search bar
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
@@ -463,7 +465,6 @@ function getDateBefore(dateInput, mode) {
         String(date.getDate()).padStart(2, '0');
 
     return formatDate(weekBefore);
-    
 }
 
 // Reports the # of adverse events of a specific drug between two dates
@@ -518,7 +519,59 @@ async function searchDrug(searchTerm, dateEnd, order, limit, batches, dateFreque
 
 }
 
+function getDaysInMonth(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    return new Date(year, month + 1, 0).getDate();
+}
+  
+function getStartOfMonth(month, year){
+    return new Date(year, month-1, 1);
+}
 
+function getEndOfMonth(month, year){
+    let days = getDaysInMonth(new Date(year, month-1, 1));
+    return new Date(year, month-1, days);
+}
+
+// given a date object, return it's formatted version suitable for openFDA API
+function dateFormatertoAPI(date){
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let day = date.getDate();
+
+    return year + "" + (month>9?month:("0"+month)) + ""+ (day>9?day:("0"+day));
+}
+
+async function crazyRez(searchTerm, month, year, country){
+    let startDate = dateFormatertoAPI(getStartOfMonth(month, year));
+    let endDate = dateFormatertoAPI(getEndOfMonth(month, year));
+    let numDays = endDate.substring(6);
+
+    console.log("Start: ", startDate);
+    console.log("End: ", endDate);
+    console.log("Num Day: ", numDays);
+
+    let results = [];
+    let order = "desc";
+
+    let dayBefore = Number(numDays);
+    let newDate = dateFormatertoAPI(new Date(year, month, dayBefore));   
+
+    while(startDate != newDate){
+        dayBefore--;
+        newDate = dateFormatertoAPI(new Date(year, month, dayBefore));   
+        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${newDate}+TO+${endDate}]`;
+        let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${100}`;
+        let response    = await fetch(searchStr);
+        console.log(searchStr);
+        let json = await response.json();
+        if(json.results) results.push(json.results);
+    }
+
+    console.log("RESULTS: ");
+    console.log(results);
+}
 
 async function searchQuery(limit, order, dateStart, dateEnd){
     
