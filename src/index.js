@@ -16,6 +16,7 @@ window.onload = async function() {
     //Single drug search bar
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
+            removeAllButtons();
             const drugName = event.target.value;
     
             let country = document.getElementById("country0").value;
@@ -94,6 +95,7 @@ window.onload = async function() {
     //Left drug search bar
     document.getElementById("search-input-1").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
+            removeAllButtons();
             const drugName = event.target.value;
 
             let country = document.getElementById("country0").value;
@@ -166,7 +168,7 @@ window.onload = async function() {
                     }
                 });
     
-                console.log("Boom graph made!");
+                // console.log("Boom graph made!");
     
                 document.getElementById("plot1").on('plotly_click', function(data){
                     generateMonthGraph(drugName, data.points[0].x, 'plot1', country);
@@ -179,6 +181,7 @@ window.onload = async function() {
     //Right drug search bar
     document.getElementById("search-input-2").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
+            removeAllButtons();
             const drugName = event.target.value;
 
             let country = document.getElementById("country1").value;
@@ -250,11 +253,11 @@ window.onload = async function() {
                   }
               });
   
-              console.log("Boom graph made!");
+            //   console.log("Boom graph made!");
   
               document.getElementById("plot2").on('plotly_click', function(data){
                   generateMonthGraph(drugName, data.points[0].x, 'plot2', country);
-                  console.log(data.points[0].x);
+                //   console.log(data.points[0].x);
               });
           }).catch(error => console.error("Plotly Error:", error));
         }
@@ -268,7 +271,7 @@ window.onload = async function() {
 
 async function generateMonthGraph(drugName, year, plotID, country) {
     let plotNumber = plotID.substring(4, 5);
-    console.log(plotNumber);
+    // console.log(plotNumber);
 
     // Save existing map
     if (plotID === 'plot1') tempMap = { ...map };
@@ -331,11 +334,11 @@ async function generateMonthGraph(drugName, year, plotID, country) {
                 }
             });
 
-            console.log("Boom graph made!");
+            // console.log("Boom graph made!");
 
             document.getElementById("plot" + plotNumber).on('plotly_click', function (data) {
                 generateMonthGraph(drugName, data.points[0].x, 'plot' + plotNumber, country);
-                console.log(data.points[0].x);
+                // console.log(data.points[0].x);
             });
         }).catch(error => console.error("Plotly Error:", error));
 
@@ -386,7 +389,7 @@ async function generateMonthGraph(drugName, year, plotID, country) {
     document.getElementById("plot" + plotNumber).on('plotly_click', function(data){
         button.remove();
         generateDayGraph(drugName, data.points[0].x, year, 'plot' + plotNumber, country);
-        console.log(data.points[0].x);
+        // console.log(data.points[0].x);
     });
 
     document.getElementById("divForBackButton" + plotNumber).appendChild(button);
@@ -394,7 +397,7 @@ async function generateMonthGraph(drugName, year, plotID, country) {
 
 async function generateDayGraph(drugName, month, year, plotID, country) {
     let plotNumber = plotID.substring(4, 5);
-    console.log(plotNumber);
+    // console.log(plotNumber);
 
     // Save existing map
     if (plotID === 'plot1') monthMap = { ...map };
@@ -472,11 +475,11 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
                     }
                 });
 
-                console.log("Boom graph made!");
+                // console.log("Boom graph made!");
 
                 document.getElementById("plot" + plotNumber).on('plotly_click', function (data) {
                     generateMonthGraph(drugName, data.points[0].x, 'plot' + plotNumber, country);
-                    console.log(data.points[0].x);
+                    // console.log(data.points[0].x);
                 });
             }).catch(error => console.error("Plotly Error:", error));
 
@@ -525,7 +528,7 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
                 }
             });
 
-            console.log("Boom graph made!");
+            // console.log("Boom graph made!");
 
             document.getElementById("plot" + plotNumber).on('plotly_click', function (data) {
                 generateMonthGraph(drugName, year, 'plot' + plotNumber, country);
@@ -537,10 +540,10 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
 
     let daysInMonth = getDaysinMonth(month);
     let endDate = year + padMonth(month).toString() + padDay(daysInMonth).toString();
-    console.log("Day lcicked end date is ", endDate);
-    console.log("Day lcicked month is ", month);
-    console.log("Day lcicked year is ", year);
-    console.log("Day lcicked days is ", daysInMonth);
+    // console.log("Day lcicked end date is ", endDate);
+    // console.log("Day lcicked month is ", month);
+    // console.log("Day lcicked year is ", year);
+    // console.log("Day lcicked days is ", daysInMonth);
 
     await searchDrug(drugName, endDate, 'desc', 1, daysInMonth, "day", plotNumber == 1 ? map : map2, country);
 
@@ -762,18 +765,23 @@ async function crazyRez(searchTerm, month, year, country){
     while(startDate != newDate){
         dayBefore--;
         newDate = dateFormatertoAPI(new Date(year, month, dayBefore));   
+        console.log("new: " , newDate);
         let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${newDate}+TO+${endDate}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${100}`;
-        let response    = await fetch(searchStr);
-        console.log(searchStr);
-        let json = await response.json();
-        if(json.results) results.push(json.results);
+        let response;
+        try{
+            response = await fetch(searchStr);
+            if(!response.ok) continue;
+            let json = await response.json();
+            if(json.results) results.push(json.results);
+        } catch{error => "not ok respo"}
+
     }
 
     console.log("RESULTS: ");
     console.log(results);
 }
-
+ 
 async function searchQuery(limit, order, dateStart, dateEnd){
     
     let searchRange = "";
@@ -815,4 +823,11 @@ function padMonth(month) {
 
 function padDay(day) {
     return day < 10 ? '0' + day : day;
+}
+
+function removeAllButtons(){
+    let button = document.getElementById("backButton1");
+    if(button) button.remove();
+    let button2 = document.getElementById("backButton2");
+    if(button2) button2.remove();
 }
