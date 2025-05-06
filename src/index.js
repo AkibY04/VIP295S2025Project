@@ -739,7 +739,7 @@ function getEndOfMonth(month, year){
 }
 
 // given a date object, return it's formatted version suitable for openFDA API
-function dateFormatertoAPI(date){
+function dateFormattertoAPI(date){
     let year = date.getFullYear();
     let month = date.getMonth()+1;
     let day = date.getDate();
@@ -748,8 +748,8 @@ function dateFormatertoAPI(date){
 }
 
 async function crazyRez(searchTerm, month, year, country){
-    let startDate = dateFormatertoAPI(getStartOfMonth(month, year));
-    let endDate = dateFormatertoAPI(getEndOfMonth(month, year));
+    let startDate = dateFormattertoAPI(getStartOfMonth(month, year));
+    let endDate = dateFormattertoAPI(getEndOfMonth(month, year));
     let numDays = endDate.substring(6);
 
     console.log("Start: ", startDate);
@@ -760,11 +760,11 @@ async function crazyRez(searchTerm, month, year, country){
     let order = "desc";
 
     let dayBefore = Number(numDays);
-    let newDate = dateFormatertoAPI(new Date(year, month, dayBefore));   
+    let newDate = dateFormattertoAPI(new Date(year, month, dayBefore));   
 
     while(startDate != newDate){
         dayBefore--;
-        newDate = dateFormatertoAPI(new Date(year, month, dayBefore));   
+        newDate = dateFormattertoAPI(new Date(year, month, dayBefore));   
         console.log("new: " , newDate);
         let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${newDate}+TO+${endDate}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${100}`;
