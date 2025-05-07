@@ -861,7 +861,7 @@ function getEndOfMonth(month, year){
 }
 
 // given a date object, return it's formatted version suitable for openFDA API
-function dateFormatertoAPI(date){
+function dateFormattertoAPI(date){
     let year = date.getFullYear();
     let month = date.getMonth()+1;
     let day = date.getDate();
@@ -870,8 +870,8 @@ function dateFormatertoAPI(date){
 }
 
 async function crazyRez(searchTerm, month, year, country){
-    let startDate = dateFormatertoAPI(getStartOfMonth(month, year));
-    let endDate = dateFormatertoAPI(getEndOfMonth(month, year));
+    let startDate = dateFormattertoAPI(getStartOfMonth(month, year));
+    let endDate = dateFormattertoAPI(getEndOfMonth(month, year));
     let numDays = endDate.substring(6);
 
     console.log("Start: ", startDate);
@@ -881,17 +881,13 @@ async function crazyRez(searchTerm, month, year, country){
     let results = [];
     let order = "desc";
     let dayBefore = Number(numDays);
-    let newDate;
+    let newDate = dateFormattertoAPI(new Date(year, month, dayBefore));   
 
-    let it = 0;
-    while(startDate != endDate){
-        console.log("Year: ", year);
-        console.log("Month:", month);
-        console.log("Day: ", dayBefore);
-        // console.log("start: " , newDate);
-        console.log("end:", endDate);
-        // build search string
-        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${endDate}+TO+${endDate}]`;
+    while(startDate != newDate){
+        dayBefore--;
+        newDate = dateFormattertoAPI(new Date(year, month, dayBefore));   
+        console.log("new: " , newDate);
+        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${newDate}+TO+${endDate}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${100}`;
         let response;
         console.log(searchStr);
@@ -901,7 +897,7 @@ async function crazyRez(searchTerm, month, year, country){
         if(json.results) results.push(json.results);
         console.log("here!");
         dayBefore--;
-        endDate = dateFormatertoAPI(new Date(year, month-1, dayBefore));   
+        endDate = dateFormattertoAPI(new Date(year, month-1, dayBefore));   
         console.log("Cur Date: ", new Date(year, month-1, dayBefore));
         // last ditch mechanism to make sure code doesn't loop infinitely (should never come to this...)
         it++;
