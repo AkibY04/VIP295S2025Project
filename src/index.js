@@ -11,11 +11,12 @@ window.onload = async function() {
     document.getElementById("search-input-1").style.display="none"
     document.getElementById("search-input-2").style.display="none";
     
-    crazyRez("albuterol", "1", "2020", "US");
+    // crazyRez("albuterol", "11", "2023", "US");
     
     //Single drug search bar
     document.getElementById("search-input-0").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
+            hideTable(1);
             removeAllButtons();
             const drugName = event.target.value;
     
@@ -95,6 +96,7 @@ window.onload = async function() {
     //Left drug search bar
     document.getElementById("search-input-1").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
+            hideTable(1);
             removeAllButtons();
             const drugName = event.target.value;
 
@@ -181,6 +183,7 @@ window.onload = async function() {
     //Right drug search bar
     document.getElementById("search-input-2").addEventListener('keydown', async function(event) {
         if(event.key == 'Enter'){
+            hideTable(2);
             removeAllButtons();
             const drugName = event.target.value;
 
@@ -396,6 +399,7 @@ async function generateMonthGraph(drugName, year, plotID, country) {
 }
 
 async function generateDayGraph(drugName, month, year, plotID, country) {
+    let tableNum = plotID == "plot1" ? 1 : 2;
     let plotNumber = plotID.substring(4, 5);
     // console.log(plotNumber);
 
@@ -418,6 +422,8 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
 
     //DAYS TO MONTHS
     button.addEventListener('click', async function () {
+        hideTable(tableNum);
+
         Plotly.purge(plotID);
         
         //MONTHS TO YEARS BUTTON
@@ -480,6 +486,7 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
                 document.getElementById("plot" + plotNumber).on('plotly_click', function (data) {
                     generateMonthGraph(drugName, data.points[0].x, 'plot' + plotNumber, country);
                     // console.log(data.points[0].x);
+                    
                 });
             }).catch(error => console.error("Plotly Error:", error));
 
@@ -532,11 +539,15 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
 
             document.getElementById("plot" + plotNumber).on('plotly_click', function (data) {
                 generateMonthGraph(drugName, year, 'plot' + plotNumber, country);
+                //console.log("boom banana");
             });
         }).catch(error => console.error("Plotly Error:", error));
 
         button.remove();
     });
+
+    displayTable(tableNum);
+    invisibleTable(tableNum);
 
     let daysInMonth = getDaysinMonth(month);
     let endDate = year + padMonth(month).toString() + padDay(daysInMonth).toString();
@@ -586,10 +597,71 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
     });
 
     document.getElementById("divForBackButton" + plotNumber).appendChild(button);
+
+    // addTableRow(1, "baba", 1);  
+
+    console.log("month: ", month, " year: ", year);
+    let allResults = await crazyRez(drugName, month, year, country);
+    
+    let top20Array = getMedicinalProduct(allResults);
+
+    // add to table
+    addDataToTable(tableNum, top20Array);
+    // displayTable(tableNum);
+    visibleTable(tableNum);
+    console.log(allResults); 
+    
+
+} 
+// method to add data to table
+function addDataToTable(tableNum, medicinalProductArray){
+    let table = document.getElementById("table"+tableNum);
+    let tbody = table.getElementsByTagName("tbody")[0]; // Get tbody
+    tbody.innerHTML = '';
+    medicinalProductArray.forEach(([count, product]) => {
+        addTableRow(tableNum,product,count);
+    });
+}
+// method to trim data 
+function getMedicinalProduct(allResults){
+    // general flow:
+    // allResults[index].[index2].patient.drug[index3].medicinalproduct
+
+    let index = 0;
+    let medicinalProductsArray = [];
+    let medicinalProductCounts = new Map();
+    allResults.forEach((result,index) =>{
+        result.forEach((subResult,index2) =>{
+            subResult.patient.drug.forEach((drug,index3)=>{
+                let medicinalProd = drug.medicinalproduct;
+                medicinalProductsArray.push(medicinalProd);
+                if (medicinalProd) {
+                    if (medicinalProductCounts.has(medicinalProd)) {
+                        medicinalProductCounts.set(medicinalProd, medicinalProductCounts.get(medicinalProd) + 1);
+                    } 
+                    else {
+                        medicinalProductCounts.set(medicinalProd, 1);
+                    }
+                }
+                })
+        })
+    })
+    let sortedMedicinalProducts = [...medicinalProductCounts.entries()]
+     .sort((a, b) => b[1] - a[1]); // Sort by count in descending order
+
+    let top20MedicinalProducts = sortedMedicinalProducts.slice(0, 20);
+
+    console.log(sortedMedicinalProducts);
+    console.log(medicinalProductsArray);
+    console.log(medicinalProductCounts);
+    console.log(top20MedicinalProducts);
+
+    return top20MedicinalProducts;
 }
 
-
 function toggleSearchbarVisibility(){
+    hideTable(1);
+    hideTable(2);
     // SINGLE SEARCH BAR
     if(document.getElementById("search-input-0").style.display=="none"){
         Plotly.purge('plot1');
@@ -669,6 +741,56 @@ function getDateBefore(dateInput, mode) {
         String(date.getDate()).padStart(2, '0');
 
     return formatDate(weekBefore);
+}
+
+function toggleDisplayTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.display=="none"){
+        table1.style.display="block";
+    }
+    else {
+        table1.style.display="none";
+    }
+}
+
+function displayTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.display=="none"){
+        table1.style.display="block";
+    }
+    else {
+        console.log("NO! The table " + tableNumber + " is already displayed!");
+    }
+}
+
+function hideTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.display=="none"){
+        console.log("NO! The table " + tableNumber + " is already hidden!");
+    }
+    else {
+        table1.style.visibility="visible";
+    }
+}
+
+function invisibleTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.visibility=="none"){
+        console.log("NO! The table " + tableNumber + " is already hidden!");
+    }
+    else {
+        table1.style.visibility="hidden";
+    }
+}
+
+function visibleTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.visibility=="visible"){
+        console.log("NO! The table " + tableNumber + " is already hidden!");
+    }
+    else {
+        table1.style.visibility="visible";
+    }
 }
 
 // Reports the # of adverse events of a specific drug between two dates
@@ -758,28 +880,39 @@ async function crazyRez(searchTerm, month, year, country){
 
     let results = [];
     let order = "desc";
-
     let dayBefore = Number(numDays);
-    let newDate = dateFormatertoAPI(new Date(year, month, dayBefore));   
+    let newDate;
 
-    while(startDate != newDate){
-        dayBefore--;
-        newDate = dateFormatertoAPI(new Date(year, month, dayBefore));   
-        console.log("new: " , newDate);
-        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${newDate}+TO+${endDate}]`;
+    let it = 0;
+    while(startDate != endDate){
+        console.log("Year: ", year);
+        console.log("Month:", month);
+        console.log("Day: ", dayBefore);
+        // console.log("start: " , newDate);
+        console.log("end:", endDate);
+        // build search string
+        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${endDate}+TO+${endDate}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${100}`;
         let response;
-        try{
-            response = await fetch(searchStr);
-            if(!response.ok) continue;
-            let json = await response.json();
-            if(json.results) results.push(json.results);
-        } catch{error => "not ok respo"}
-
+        console.log(searchStr);
+        response = await fetch(searchStr);
+        // only push to returned array if resp was gooooood in the neighborhood
+        let json = await response.json();
+        if(json.results) results.push(json.results);
+        console.log("here!");
+        dayBefore--;
+        endDate = dateFormatertoAPI(new Date(year, month-1, dayBefore));   
+        console.log("Cur Date: ", new Date(year, month-1, dayBefore));
+        // last ditch mechanism to make sure code doesn't loop infinitely (should never come to this...)
+        it++;
+        if (it>40)
+            break;
+        // console.log("it: " , it);
     }
 
-    console.log("RESULTS: ");
-    console.log(results);
+    // console.log("RESULTS: ");
+    // console.log(results);
+    return results;
 }
  
 async function searchQuery(limit, order, dateStart, dateEnd){
@@ -830,4 +963,23 @@ function removeAllButtons(){
     if(button) button.remove();
     let button2 = document.getElementById("backButton2");
     if(button2) button2.remove();
+}
+
+function addTableRow(tableNum, drugName, count) {
+    // Get the table and tbody
+    let table = document.getElementById("table"+tableNum);
+    let tbody = table.getElementsByTagName("tbody")[0]; // Get tbody
+
+    // Create a new row
+    let newRow = tbody.insertRow();
+
+    // Create and append new cells (td) for Drug Name and Count
+    let drugCell = newRow.insertCell(0);
+    let countCell = newRow.insertCell(0);
+
+
+    // Set content for the new cells
+    drugCell.innerHTML = drugName; // Set dynamic value here
+    countCell.innerHTML = count; // Set dynamic value here
+
 }
