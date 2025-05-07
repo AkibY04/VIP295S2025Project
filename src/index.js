@@ -592,10 +592,11 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
             },
             frame: {
                 duration: 800
-            }
+            }   
         });
     });
 
+    console.log("Adding div for back button: ", plotNumber);
     document.getElementById("divForBackButton" + plotNumber).appendChild(button);
 
     // addTableRow(1, "baba", 1);  
@@ -603,16 +604,15 @@ async function generateDayGraph(drugName, month, year, plotID, country) {
     console.log("month: ", month, " year: ", year);
     let allResults = await crazyRez(drugName, month, year, country);
     
-    let top20Array = getMedicinalProduct(allResults);
+    let top20Array = getReactions(allResults);
 
     // add to table
     addDataToTable(tableNum, top20Array);
     // displayTable(tableNum);
     visibleTable(tableNum);
     console.log(allResults); 
-    
-
 } 
+
 // method to add data to table
 function addDataToTable(tableNum, medicinalProductArray){
     let table = document.getElementById("table"+tableNum);
@@ -623,41 +623,78 @@ function addDataToTable(tableNum, medicinalProductArray){
     });
 }
 // method to trim data 
-function getMedicinalProduct(allResults){
-    // general flow:
-    // allResults[index].[index2].patient.drug[index3].medicinalproduct
+// function getMedicinalProduct(allResults){
+//     // general flow:
+//     // allResults[index].[index2].patient.drug[index3].medicinalproduct
+//     console.log(allResults);
 
-    let index = 0;
-    let medicinalProductsArray = [];
-    let medicinalProductCounts = new Map();
-    allResults.forEach((result,index) =>{
-        result.forEach((subResult,index2) =>{
-            subResult.patient.drug.forEach((drug,index3)=>{
-                let medicinalProd = drug.medicinalproduct;
-                medicinalProductsArray.push(medicinalProd);
-                if (medicinalProd) {
-                    if (medicinalProductCounts.has(medicinalProd)) {
-                        medicinalProductCounts.set(medicinalProd, medicinalProductCounts.get(medicinalProd) + 1);
-                    } 
-                    else {
-                        medicinalProductCounts.set(medicinalProd, 1);
+//     let index = 0;
+//     let medicinalProductsArray = [];
+//     let medicinalProductCounts = new Map();
+//     allResults.forEach((result,index) =>{
+//         result.forEach((subResult,index2) =>{
+//             subResult.patient.drug.forEach((drug,index3)=>{
+//                 let medicinalProd = drug.medicinalproduct;
+//                 medicinalProductsArray.push(medicinalProd);
+//                 if (medicinalProd) {
+//                     if (medicinalProductCounts.has(medicinalProd)) {
+//                         medicinalProductCounts.set(medicinalProd, medicinalProductCounts.get(medicinalProd) + 1);
+//                     } 
+//                     else {
+//                         medicinalProductCounts.set(medicinalProd, 1);
+//                     }
+//                 }
+//                 })
+//         })
+//     })
+//     let sortedMedicinalProducts = [...medicinalProductCounts.entries()]
+//      .sort((a, b) => b[1] - a[1]); // Sort by count in descending order
+
+//     let top20MedicinalProducts = sortedMedicinalProducts.slice(0, 20);
+
+//     console.log(sortedMedicinalProducts);
+//     console.log(medicinalProductsArray);
+//     console.log(medicinalProductCounts);
+//     console.log(top20MedicinalProducts);
+
+//     return top20MedicinalProducts;
+// }
+
+function getReactions(allResults) {
+    // general flow:
+    // allResults[index].[index2].patient.reaction[index3].reactionmeddrapt
+    console.log(allResults);
+
+    let meddraptArray = [];
+    let meddraptCounts = new Map();
+
+    allResults.forEach((result) => {
+        result.forEach((subResult) => {
+            subResult.patient.reaction.forEach((reaction) => {
+                let meddrapt = reaction.reactionmeddrapt;
+                meddraptArray.push(meddrapt);
+                if (meddrapt) {
+                    if (meddraptCounts.has(meddrapt)) {
+                        meddraptCounts.set(meddrapt, meddraptCounts.get(meddrapt) + 1);
+                    } else {
+                        meddraptCounts.set(meddrapt, 1);
                     }
                 }
-                })
-        })
-    })
-    let sortedMedicinalProducts = [...medicinalProductCounts.entries()]
-     .sort((a, b) => b[1] - a[1]); // Sort by count in descending order
+            });
+        });
+    });
 
-    let top20MedicinalProducts = sortedMedicinalProducts.slice(0, 20);
+    let sortedMeddrapts = [...meddraptCounts.entries()].sort((a, b) => b[1] - a[1]);
+    let top20Meddrapts = sortedMeddrapts.slice(0, 20);
 
-    console.log(sortedMedicinalProducts);
-    console.log(medicinalProductsArray);
-    console.log(medicinalProductCounts);
-    console.log(top20MedicinalProducts);
+    console.log(sortedMeddrapts);
+    console.log(meddraptArray);
+    console.log(meddraptCounts);
+    console.log(top20Meddrapts);
 
-    return top20MedicinalProducts;
+    return top20Meddrapts;
 }
+
 
 function toggleSearchbarVisibility(){
     hideTable(1);
@@ -715,7 +752,6 @@ function toggleSearchbarVisibility(){
 
 }
 
-
 // Retrieves the date before the given date in dateInput
 // mode: 1 "week" / "month" / "year" / "day" before the given date
 function getDateBefore(dateInput, mode) {
@@ -741,56 +777,6 @@ function getDateBefore(dateInput, mode) {
         String(date.getDate()).padStart(2, '0');
 
     return formatDate(weekBefore);
-}
-
-function toggleDisplayTable(tableNumber){
-    let table1 = document.getElementById("tableWrapper"+tableNumber);
-    if(table1.style.display=="none"){
-        table1.style.display="block";
-    }
-    else {
-        table1.style.display="none";
-    }
-}
-
-function displayTable(tableNumber){
-    let table1 = document.getElementById("tableWrapper"+tableNumber);
-    if(table1.style.display=="none"){
-        table1.style.display="block";
-    }
-    else {
-        console.log("NO! The table " + tableNumber + " is already displayed!");
-    }
-}
-
-function hideTable(tableNumber){
-    let table1 = document.getElementById("tableWrapper"+tableNumber);
-    if(table1.style.display=="none"){
-        console.log("NO! The table " + tableNumber + " is already hidden!");
-    }
-    else {
-        table1.style.visibility="visible";
-    }
-}
-
-function invisibleTable(tableNumber){
-    let table1 = document.getElementById("tableWrapper"+tableNumber);
-    if(table1.style.visibility=="none"){
-        console.log("NO! The table " + tableNumber + " is already hidden!");
-    }
-    else {
-        table1.style.visibility="hidden";
-    }
-}
-
-function visibleTable(tableNumber){
-    let table1 = document.getElementById("tableWrapper"+tableNumber);
-    if(table1.style.visibility=="visible"){
-        console.log("NO! The table " + tableNumber + " is already hidden!");
-    }
-    else {
-        table1.style.visibility="visible";
-    }
 }
 
 // Reports the # of adverse events of a specific drug between two dates
@@ -861,7 +847,7 @@ function getEndOfMonth(month, year){
 }
 
 // given a date object, return it's formatted version suitable for openFDA API
-function dateFormattertoAPI(date){
+function dateFormaterttoAPI(date){
     let year = date.getFullYear();
     let month = date.getMonth()+1;
     let day = date.getDate();
@@ -870,8 +856,8 @@ function dateFormattertoAPI(date){
 }
 
 async function crazyRez(searchTerm, month, year, country){
-    let startDate = dateFormattertoAPI(getStartOfMonth(month, year));
-    let endDate = dateFormattertoAPI(getEndOfMonth(month, year));
+    let startDate = dateFormaterttoAPI(getStartOfMonth(month, year));
+    let endDate = dateFormaterttoAPI(getEndOfMonth(month, year));
     let numDays = endDate.substring(6);
 
     console.log("Start: ", startDate);
@@ -881,13 +867,17 @@ async function crazyRez(searchTerm, month, year, country){
     let results = [];
     let order = "desc";
     let dayBefore = Number(numDays);
-    let newDate = dateFormattertoAPI(new Date(year, month, dayBefore));   
+    let newDate;
 
-    while(startDate != newDate){
-        dayBefore--;
-        newDate = dateFormattertoAPI(new Date(year, month, dayBefore));   
-        console.log("new: " , newDate);
-        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${newDate}+TO+${endDate}]`;
+    let it = 0;
+    while(startDate != endDate){
+        console.log("Year: ", year);
+        console.log("Month:", month);
+        console.log("Day: ", dayBefore);
+        // console.log("start: " , newDate);
+        console.log("end:", endDate);
+        // build search string
+        let searchRange = `search=patient.drug.openfda.brand_name:"${searchTerm}"+AND+occurcountry:${country}+AND+receivedate:[${endDate}+TO+${endDate}]`;
         let searchStr   = `https://api.fda.gov/drug/event.json?${searchRange}&sort=receivedate:${order}&limit=${100}`;
         let response;
         console.log(searchStr);
@@ -897,7 +887,7 @@ async function crazyRez(searchTerm, month, year, country){
         if(json.results) results.push(json.results);
         console.log("here!");
         dayBefore--;
-        endDate = dateFormattertoAPI(new Date(year, month-1, dayBefore));   
+        endDate = dateFormaterttoAPI(new Date(year, month-1, dayBefore));   
         console.log("Cur Date: ", new Date(year, month-1, dayBefore));
         // last ditch mechanism to make sure code doesn't loop infinitely (should never come to this...)
         it++;
@@ -944,6 +934,58 @@ function getDaysinMonth(month){
         daysInMonth = 28;
     }
     return daysInMonth;
+}
+
+function toggleDisplayTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.display=="none"){
+        table1.style.display="block";
+    }
+    else {
+        table1.style.display="none";
+    }
+}
+
+function displayTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.display=="none"){
+        table1.style.display="block";
+    }
+    else {
+        console.log("NO! The table " + tableNumber + " is already displayed!");
+    }
+}
+
+function hideTable(tableNumber){
+    console.log("aa");
+
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.display=="none"){
+        console.log("NO! The table " + tableNumber + " is already hidden!");
+    }
+    else {
+        table1.style.display="none";
+    }
+}
+
+function invisibleTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.visibility=="hidden"){
+        console.log("NO! The table " + tableNumber + " is already hidden!");
+    }
+    else {
+        table1.style.visibility="hidden";
+    }
+}
+
+function visibleTable(tableNumber){
+    let table1 = document.getElementById("tableWrapper"+tableNumber);
+    if(table1.style.visibility=="visible"){
+        console.log("NO! The table " + tableNumber + " is already visible!");
+    }
+    else {
+        table1.style.visibility="visible";
+    }
 }
 
 function padMonth(month) {

@@ -4,6 +4,7 @@ body {
     overflow-x: hidden;
     word-wrap: break-word;
     height: 100vh;
+    
     /* background-color: #081937; */
 }
 
@@ -85,9 +86,9 @@ body {
     height: 100%;
     z-index: -1;
     position: fixed;
-    top:5%;
-    
     /* top:5%; */
+    
+    top:10%;
     /* left:30%;  */
 }
 
@@ -103,24 +104,25 @@ body {
     grid-template-columns: 3fr 1fr;  /* graph 3× as wide as table */
     column-gap: 1rem;
     height: 40vh;
+    margin-bottom: 30%;
 }
 
 .dateStartWrapper, .dateEndWrapper, .CountrySelector{
     color:white;
 }
 
-#tableWrapper1 {
+#tableWrapper2, #tableWrapper1 {
     max-height: 30vh;      /* or whatever fits next to your graph */
     overflow-y: auto;      /* vertical scrollbar when content exceeds max-height */
     border: 1px solid #ccc;/* optional: visual boundary */
     margin-top: 5vh; /* Push down by 10% of the viewport height */
   
 }
-  #tableWrapper1 table {
+  #tableWrapper2 table, #tableWrapper1 table {
     width: 100%;           /* fill the wrapper’s width */
     border-collapse: collapse;
   }
-  #tableWrapper1 th, #tableWrapper1 td {
+  #tableWrapper2 th, #tableWrapper2 td, #tableWrapper1 th, #tableWrapper1 td {
     padding: 0.5em;
     border: 1px solid #999;
   }
